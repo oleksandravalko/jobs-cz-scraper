@@ -1,0 +1,179 @@
+{
+    "title": "Jobs.cz scraper",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "locality": {
+            "title": "Kde?",
+            "type": "string",
+            "description": "Location: city or region",
+            "editor": "textfield",
+            "prefill": "Praha"
+        },
+        "radius": {
+            "title": "Radius",
+            "type": "string",
+            "description": "Radius around inserted location",
+            "editor": "select",
+            "default": "0",
+            "enum": [
+                "50",
+                "40",
+                "30",
+                "20",
+                "10",
+                "0"
+            ],
+            "enumTitles": [
+                "50 km",
+                "40 km",
+                "30 km",
+                "20 km",
+                "10 km",
+                "0 km"
+            ]
+        },
+        "keyword": {
+            "title": "Jakou práci hledáte?",
+            "type": "string",
+            "description": "Name of firm or professional field",
+            "editor": "textfield",
+            "default": "",
+            "prefill": "Skladnik"
+        },
+        "date": {
+            "title": "Čas zveřejnění",
+            "type": "string",
+            "description": "Recency of job openings.",
+            "editor": "select",
+            "default": "",
+            "enum": [
+                "",
+                "24h",
+                "3d",
+                "7d"
+            ],
+            "enumTitles": [
+                "Nezáleží (irrelevant)",
+                "Posledních 24 hod (last 24h)",
+                "Poslední 3 dny (last 3 days)",
+                "Poslední tyden (last week)"
+            ]
+        },
+        "salary": {
+            "title": "Plat",
+            "type": "string",
+            "description": "Minimum deserved level of income",
+            "editor": "textfield",
+            "prefill": ""
+        },
+        "employment": {
+            "title": "Úvazek",
+            "type": "array",
+            "description": "Time commitment.",
+            "editor": "select",
+            "default": [],
+            "items": {
+                "type": "string",
+                "enum": [
+                    "full",
+                    "part",
+                    "internship"
+                ],
+                "enumTitles": [
+                    "Plný úvazek (full-time)",
+                    "Zkrácený úvazek (part-time)",
+                    "Stáže, praxe a trainee programy (internships)"
+                ]
+            }
+        },
+        "contract": {
+            "title": "Typ spolupráce",
+            "type": "array",
+            "description": "Contract form",
+            "editor": "select",
+            "default": [],
+            "items": {
+                "type": "string",
+                "enum": [
+                    "employment_contract",
+                    "identification_number",
+                    "agreement"
+                ],
+                "enumTitles": [
+                    "Pracovní smlouva (HPP/VPP) (employment contract)",
+                    "Práce na živnostenský list (as contractor)",
+                    "Práce na dohodu (DPP/DPČ) (employment agreement)"
+                ]
+            }
+        },
+        "education": {
+            "title": "Vyžadované vzdělání",
+            "type": "string",
+            "description": "Required education",
+            "editor": "select",
+            "default": "",
+            "enum": [
+                "",
+                "primary",
+                "high",
+                "uni"
+            ],
+            "enumTitles": [
+                "Nezáleží (irrelevant)",
+                "Bez maturity (secondary)",
+                "S maturitou (high school)",
+                "VŠ (university)"
+            ]
+        },
+        "languageSkill": {
+            "title": "Vyžadované jazyky",
+            "type": "array",
+            "description": "Required languages",
+            "editor": "select",
+            "default": [],
+            "items": {
+                "type": "string",
+                "enum": [
+                    "cz",
+                    "en",
+                    "de",
+                    "fr",
+                    "ru",
+                    "pl",
+                    "it",
+                    "es"
+                ],
+                "enumTitles": [
+                    "Jen čeština (only Czech)",
+                    "Angličtina (English)",
+                    "Němčina (German)",
+                    "Francouzština (French)",
+                    "Ruština (Russian)",
+                    "Polština (Polish)",
+                    "Italština (Italian)",
+                    "Španělština (Spanish)"
+                ]
+            }
+        },
+        "arrangement": {
+            "title": "Práce z domova",
+            "type": "string",
+            "description": "Work arrangement",
+            "editor": "select",
+            "default": "",
+            "enum": [
+                "",
+                "partial-work-from-home",
+                "mostly-from-home",
+                "flexible-hours"
+            ],
+            "enumTitles": [
+                "Nezáleží (irrelevant)",
+                "Možnost práce z domova (home office from time to time)",
+                "Práce převážně z domova (mostly working from home)",
+                "Flexibilní pracovní doba (flexible working hours)"
+            ]
+        }
+    }
+}
