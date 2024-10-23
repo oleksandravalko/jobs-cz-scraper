@@ -34,26 +34,19 @@ router.addHandler(LABELS.entry, async ({ $, crawler, request }) => {
         // jobs were found correctly
         const totalJobsAmount = Number(totalJobsAmountElement.text().trim());
         const totalPagesAmount = pagesAmount(totalJobsAmount);
-        log.info(`Total number of jobs found on page ${totalPagesAmount}: ${totalJobsAmount}`);
+        log.info(`Total number of jobs found ${totalJobsAmount}, ${totalPagesAmount} pages of search results.`);
 
         const entryPageUrl = request.url;
-        const pageLinks: Request[] = [
-            {
-                url: entryPageUrl,
-                label: LABELS.list,
-            },
-        ];
+        const pageLinks: Request[] = [];
 
-        if (totalPagesAmount > 1) {
-            for (let i = 2; i <= totalPagesAmount; i++) {
-                pageLinks.push({
-                    url: `${entryPageUrl}&page=${i}`,
-                    label: LABELS.list,
-                    userData: {
-                        pageNumber: i,
-                    },
-                });
-            }
+        for (let i = 1; i <= totalPagesAmount; i++) {
+            pageLinks.push({
+                url: `${entryPageUrl}&page=${i}`,
+                label: LABELS.list,
+                userData: {
+                    pageNumber: i,
+                },
+            });
         }
 
         log.info(`Page link(s) added to requestQueue: ${pageLinks.length}.`);
@@ -66,6 +59,8 @@ router.addHandler(LABELS.entry, async ({ $, crawler, request }) => {
 });
 
 router.addHandler(LABELS.list, async ({ $, request }) => {
-    const jobsElements = $('div#productDescription');
+    const jobsElements = $('article.SearchResultCard');
+
+    log.info(`Visiting page number ${request.userData.pageNumber} by link ${request.url}.`);
     log.info(`Total number of jobs found on page ${request.userData.pageNumber}: ${jobsElements.length}.`);
 });
