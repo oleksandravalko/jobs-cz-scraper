@@ -16,3 +16,15 @@ export type Request = {
     label: string,
     userData?: Record<string, string|number>
 }
+
+export type Job = {
+    id: number;
+    link: string;
+    employer: string;
+    title: string;
+    locality: string;
+    wage: string;
+    employment: string;
+    contract: string;
+    arrangement: string;
+}

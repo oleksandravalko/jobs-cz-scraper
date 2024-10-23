@@ -53,3 +53,12 @@ export const formSearchUrl = (inputObject: Input) => {
 export const pagesAmount = (jobsAmount: number) => {
     return Math.ceil(jobsAmount / JOBS_PER_PAGE);
 };
+
+export const formatPriceRange = (wageString:string) => {
+    return wageString
+        .trim()
+        .replace(/&nbsp;/g, '')
+        .replace(/\u200B|\u200C|\u200D|\uFEFF/g, '')
+        .replace(/\s+/g, '')
+        .replace(/Kč/, ' Kč');
+};

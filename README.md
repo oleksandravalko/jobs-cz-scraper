@@ -38,11 +38,11 @@ This scraper collects information about open positions. Filtering in search quer
 ### Dataset item example:
 ```json
 {
-    "id": "2000386924",
+    "id": 2000386924,
     "link": "https://jobs.cz/prace/rpd/2000386924",
     "employer": "COLD GROUP s.r.o",
     "title": "Realitní Makléř specializující se na prodej Dubajských nemovitostí pro Českou klientelu",
-    "location": "Praha – Stodůlky",
+    "locality": "Praha – Stodůlky",
     "wage": "200 000 ‍–‍ 400 000 Kč",
     "employment": "Práce na plný úvazek",
     "contract": "Práce na živnostenský list (IČO)",

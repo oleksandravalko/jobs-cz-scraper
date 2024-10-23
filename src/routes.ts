@@ -1,8 +1,8 @@
 import { createCheerioRouter } from 'crawlee';
-import { log } from 'apify';
+import { Actor, log } from 'apify';
 import { LABELS } from './constants.js';
-import { formSearchUrl, pagesAmount } from './utils.js';
-import { Request } from './types.js';
+import { formatPriceRange, formSearchUrl, pagesAmount } from './utils.js';
+import { Job, Request } from './types.js';
 
 export const router = createCheerioRouter();
 
@@ -62,5 +62,41 @@ router.addHandler(LABELS.list, async ({ $, request }) => {
     const jobsElements = $('article.SearchResultCard');
 
     log.info(`Visiting page #${request.userData.pageNumber} by link ${request.url}.`);
-    log.info(`Page #${request.userData.pageNumber}: ${jobsElements.length} job total.`);
+    log.info(`Page #${request.userData.pageNumber}: ${jobsElements.length} job(s) in total.`);
+
+    const jobs: Job[] = [];
+
+    for (const item of jobsElements) {
+        const jobElement = $(item);
+        const titleElement = jobElement.find('h2[data-test-ad-title] a');
+        const id = Number(titleElement.attr('data-jobad-id'));
+        log.info(`Id: ${id}`);
+        const link = titleElement.attr('href') || `jobs.cz/prace/rpd/${id}`;
+        log.info(`Link: ${link}`);
+        const title = titleElement.text().replace(/\s+/g, ' ').trim();
+        log.info(`Title: ${title}`);
+        const employerElement = jobElement.find('.SearchResultCard__footerItem>span');
+        const employer = employerElement.text().trim();
+        log.info(`Employer: ${employer}`);
+        const localityElement = jobElement.find('li[data-test="serp-locality"]');
+        const locality = localityElement.text().trim();
+        log.info(`Locality: ${locality}`);
+        const wageElement = jobElement.find('.SearchResultCard__body span.Tag--success');
+        const wage = wageElement ? formatPriceRange(wageElement?.text()) : '';
+
+        log.info(`Wage: ${wage}`);
+
+        jobs.push({
+            id,
+            link,
+            employer,
+            title,
+            locality,
+            wage,
+            employment: 'string',
+            contract: 'string',
+            arrangement: 'string',
+        });
+    }
+    await Actor.pushData(jobs);
 });
