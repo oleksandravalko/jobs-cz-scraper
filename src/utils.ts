@@ -41,7 +41,7 @@ export const formSearchUrl = (inputObject: Input) => {
 
     if (arrangement) searchParams.append('arrangement', arrangement);
 
-    if (radius) searchParams.append('locality[radius]', radius.toString());
+    if (locality && radius) searchParams.append('locality[radius]', radius.toString());
 
     // returning combined baseUrls with searchParams
     const url = new URL(baseUrl);

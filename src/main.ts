@@ -9,7 +9,7 @@ await Actor.init();
 
 const input = (await Actor.getInput<Input>()) ?? defaultInput;
 
-const searchUrl = formSearchUrl(input);
+const entryPageUrl = formSearchUrl(input);
 
 const proxyConfiguration = await Actor.createProxyConfiguration({
     groups: ['RESIDENTIAL'],
@@ -31,11 +31,16 @@ const crawler = new CheerioCrawler({
 
 await crawler.addRequests([
     {
-        url: searchUrl,
+        url: entryPageUrl,
         label: LABELS.entry,
+        userData: {
+            input,
+        },
     },
 ]);
 
-log.info('Starting the crawl from the search page:', { url: searchUrl });
+log.info('Starting the crawl from the search page:', { url: entryPageUrl });
 
 await crawler.run();
+
+await Actor.exit();

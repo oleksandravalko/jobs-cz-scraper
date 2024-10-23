@@ -8,7 +8,7 @@ Jobs.cz is online job vacancies platform. Job opportunities from all across the 
 This scraper collects information about open positions. Filtering in search query is available, and it maps onto options provided by jobs.cz website.
 ### Mechanism
 1. Actor forms url based on filtering parameters provided in input.
-   * If jobs are found, core information about them is scraped right from search result page;
+   * If jobs are found, actor calculates total number of pages and enqueues links to them;
    * If provided location parameter cannot be inserted in url effectively, actor with continues with search without it.
    * If parameters are valid, but there are no relevant jobs to be found, user will be informed about it and asked to change parameters.
 2. Actor visits all search results pages, scraping core information.

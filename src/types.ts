@@ -13,5 +13,6 @@ export type Input = {
 
 export type Request = {
     url: string,
-    label: string
+    label: string,
+    userData?: Record<string, string|number>
 }
