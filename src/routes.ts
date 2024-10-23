@@ -7,10 +7,9 @@ import { Request } from './types.js';
 export const router = createCheerioRouter();
 
 router.addHandler(LABELS.entry, async ({ $, crawler, request }) => {
-    log.debug('Reached ENTRY route.');
-    // provided location produce invalid URL
+    // provided locality produce invalid URL
     if ($('title').text().trim() === 'Stránka nenalezena') {
-        log.error('Invalid job filtering link. Removing location parameter and redirecting back to search results page with your other filters applied.');
+        log.error('Invalid job filtering link. Removing locality parameter and redirecting back to search results page with your other filters applied.');
         const inputWithoutLocation = { ...request.userData.input, locality: '', radius: '' };
 
         const newEntryUrl = formSearchUrl(inputWithoutLocation);
@@ -31,7 +30,7 @@ router.addHandler(LABELS.entry, async ({ $, crawler, request }) => {
 
     const totalJobsAmountElement = $('.SearchHeader strong');
 
-    if (totalJobsAmountElement) {
+    if (totalJobsAmountElement.length) {
         // jobs were found correctly
         const totalJobsAmount = Number(totalJobsAmountElement.text().trim());
         const totalPagesAmount = pagesAmount(totalJobsAmount);
@@ -41,7 +40,7 @@ router.addHandler(LABELS.entry, async ({ $, crawler, request }) => {
         const pageLinks: Request[] = [
             {
                 url: entryPageUrl,
-                label: LABELS.consequent,
+                label: LABELS.list,
             },
         ];
 
@@ -49,7 +48,7 @@ router.addHandler(LABELS.entry, async ({ $, crawler, request }) => {
             for (let i = 2; i <= totalPagesAmount; i++) {
                 pageLinks.push({
                     url: `${entryPageUrl}&page=${i}`,
-                    label: LABELS.consequent,
+                    label: LABELS.list,
                     userData: {
                         pageNumber: i,
                     },
@@ -66,7 +65,7 @@ router.addHandler(LABELS.entry, async ({ $, crawler, request }) => {
     }
 });
 
-// router.addHandler(LABELS.consequent, async ({ $, crawler, request }) => {
-//     const jobsElements = $('div#productDescription');
-//     log.info(`Total number of jobs found on page ${request.userData.pageNumber} is ${jobsElements.length}`);
-// });
+router.addHandler(LABELS.list, async ({ $, request }) => {
+    const jobsElements = $('div#productDescription');
+    log.info(`Total number of jobs found on page ${request.userData.pageNumber}: ${jobsElements.length}.`);
+});

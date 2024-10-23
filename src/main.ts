@@ -40,7 +40,6 @@ await crawler.addRequests([
 ]);
 
 log.info('Starting the crawl from the search page:', { url: entryPageUrl });
-
 await crawler.run();
 
 await Actor.exit();

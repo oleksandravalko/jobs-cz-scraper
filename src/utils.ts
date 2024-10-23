@@ -24,8 +24,8 @@ export const formSearchUrl = (inputObject: Input) => {
     if (date) searchParams.append('date', date.toString());
     if (salary) searchParams.append('salary', salary.toString());
 
-    employment?.forEach((option, index) => {
-        const key = index === 0 ? 'employment' : 'employment[]';
+    employment?.forEach((option) => {
+        const key = employment.length === 1 ? 'employment' : 'employment[]';
         searchParams.append(key, option);
     });
 
@@ -34,8 +34,8 @@ export const formSearchUrl = (inputObject: Input) => {
     });
 
     if (education) searchParams.append('education', education);
-    languageSkill?.forEach((lang, index) => {
-        const key = index === 0 ? 'languageSkill' : 'languageSkill[]';
+    languageSkill?.forEach((lang) => {
+        const key = languageSkill.length === 1 ? 'language-skill' : 'language-skill[]';
         searchParams.append(key, lang);
     });
 

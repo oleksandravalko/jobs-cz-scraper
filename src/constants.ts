@@ -15,6 +15,6 @@ export const defaultInput = {
 
 export const LABELS = {
     entry: 'ENTRY',
-    consequent: 'CONSEQUENT',
+    list: 'LIST',
     detail: 'DETAIL',
 };
