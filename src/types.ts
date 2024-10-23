@@ -7,5 +7,11 @@ export type Input = {
     employment: string[],
     contract: string[],
     education: string,
-    languageSkill: string,
+    languageSkill: string[],
+    arrangement: string
+}
+
+export type Request = {
+    url: string,
+    label: string
 }
