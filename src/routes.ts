@@ -31,10 +31,10 @@ router.addHandler(LABELS.entry, async ({ $, crawler, request }) => {
     const totalJobsAmountElement = $('.SearchHeader strong');
 
     if (totalJobsAmountElement.length) {
-        // jobs were found correctly
-        const totalJobsAmount = Number(totalJobsAmountElement.text().trim());
+        // jobs were found
+        const totalJobsAmount = Number(totalJobsAmountElement.text().trim()) || 1;
         const totalPagesAmount = pagesAmount(totalJobsAmount);
-        log.info(`Total number of jobs found ${totalJobsAmount}, ${totalPagesAmount} pages of search results.`);
+        log.info(`${totalJobsAmount} jobs found on ${totalPagesAmount} pages of search results.`);
 
         const entryPageUrl = request.url;
         const pageLinks: Request[] = [];
@@ -61,6 +61,6 @@ router.addHandler(LABELS.entry, async ({ $, crawler, request }) => {
 router.addHandler(LABELS.list, async ({ $, request }) => {
     const jobsElements = $('article.SearchResultCard');
 
-    log.info(`Visiting page number ${request.userData.pageNumber} by link ${request.url}.`);
-    log.info(`Total number of jobs found on page ${request.userData.pageNumber}: ${jobsElements.length}.`);
+    log.info(`Visiting page #${request.userData.pageNumber} by link ${request.url}.`);
+    log.info(`Page #${request.userData.pageNumber}: ${jobsElements.length} job total.`);
 });
