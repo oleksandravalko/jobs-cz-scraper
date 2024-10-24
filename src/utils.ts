@@ -1,5 +1,5 @@
-import { Input } from './types.js';
-import { JOBS_PER_PAGE } from './constants.js';
+import { Input, WageRange } from './types.js';
+import { defaultWageRange, JOBS_PER_PAGE } from './constants.js';
 
 export const formSearchUrl = (inputObject: Input) => {
     const {
@@ -15,12 +15,12 @@ export const formSearchUrl = (inputObject: Input) => {
         arrangement,
     } = inputObject;
 
-    const baseUrl = locality ? `https://www.jobs.cz/prace/${locality.toLowerCase()}/` : 'https://www.jobs.cz/prace/';
+    const baseUrl = locality ? `https://www.jobs.cz/prace/${locality.toLowerCase().replace(' ', '-')}/` : 'https://www.jobs.cz/prace/';
 
     const searchParams = new URLSearchParams();
 
     // adding individual items to searchParams
-    if (keyword) searchParams.append('q[]', keyword);
+    if (keyword) searchParams.append('q[]', keyword.replace(' ', '-'));
     if (date) searchParams.append('date', date.toString());
     if (salary) searchParams.append('salary', salary.toString());
 
@@ -54,11 +54,23 @@ export const pagesAmount = (jobsAmount: number) => {
     return Math.ceil(jobsAmount / JOBS_PER_PAGE);
 };
 
-export const formatPriceRange = (wageString:string) => {
-    return wageString
+export const formWageRange = (wageString:string) => {
+    const cleanString = wageString
         .trim()
         .replace(/&nbsp;/g, '')
         .replace(/\u200B|\u200C|\u200D|\uFEFF/g, '')
         .replace(/\s+/g, '')
-        .replace(/Kč/, ' Kč');
+        .replace('Kč', '');
+
+    const range = defaultWageRange;
+
+    if (cleanString.includes('–')) {
+        const extremes = cleanString.split('–');
+        range.minWage = Number(extremes[0]);
+        range.maxWage = Number(extremes[1]);
+    } else {
+        range.minWage = Number(cleanString);
+        range.maxWage = Number(cleanString);
+    }
+    return range;
 };

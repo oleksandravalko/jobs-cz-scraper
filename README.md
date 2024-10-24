@@ -39,13 +39,13 @@ This scraper collects information about open positions. Filtering in search quer
 ```json
 {
     "id": 2000386924,
-    "link": "https://jobs.cz/prace/rpd/2000386924",
+    "link": "https://www.jobs.cz/rpd/2000386924/",
     "employer": "COLD GROUP s.r.o",
     "title": "Realitní Makléř specializující se na prodej Dubajských nemovitostí pro Českou klientelu",
     "locality": "Praha – Stodůlky",
-    "wage": "200 000 ‍–‍ 400 000 Kč",
-    "employment": "Práce na plný úvazek",
-    "contract": "Práce na živnostenský list (IČO)",
-    "arrangement": "Možnost občasné práce z domova"
+    "isWage": true,
+    "minWage": 200000,
+    "maxWage": 400000,
+    "detail": "Detail nabídky Realitní Makléř specializující se na prodej Dubajských nemovitostí pro Českou klientelu+Společnost COLD GROUP s.r.o.Sluneční náměstí 2583/11, Praha – Stodůlky Plat 200 000 ‍–‍ 400 000 KčDo 2 týdnů dostanete odpověď Do 2 týdnů dostanete odpověď...."
 }
 ```

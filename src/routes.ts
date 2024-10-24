@@ -1,8 +1,8 @@
 import { createCheerioRouter } from 'crawlee';
 import { Actor, log } from 'apify';
-import { LABELS } from './constants.js';
-import { formatPriceRange, formSearchUrl, pagesAmount } from './utils.js';
-import { Job, Request } from './types.js';
+import { defaultWageRange, LABELS } from './constants.js';
+import { formWageRange, formSearchUrl, pagesAmount } from './utils.js';
+import { Job, Request, WageRange } from './types.js';
 
 export const router = createCheerioRouter();
 
@@ -82,9 +82,11 @@ router.addHandler(LABELS.list, async ({ $, request }) => {
         const locality = localityElement.text().trim();
         log.info(`Locality: ${locality}`);
         const wageElement = jobElement.find('.SearchResultCard__body span.Tag--success');
-        const wage = wageElement ? formatPriceRange(wageElement?.text()) : '';
+        const isWage = !!wageElement.length;
 
-        log.info(`Wage: ${wage}`);
+        const wageRange: WageRange = isWage ? formWageRange(wageElement.text()) : defaultWageRange;
+
+        log.info(`Wage: ${wageRange.minWage} - ${wageRange.maxWage}`);
 
         jobs.push({
             id,
@@ -92,10 +94,9 @@ router.addHandler(LABELS.list, async ({ $, request }) => {
             employer,
             title,
             locality,
-            wage,
-            employment: 'string',
-            contract: 'string',
-            arrangement: 'string',
+            isWage,
+            ...wageRange,
+            detail: 'string',
         });
     }
     await Actor.pushData(jobs);

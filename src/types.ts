@@ -23,8 +23,13 @@ export type Job = {
     employer: string;
     title: string;
     locality: string;
-    wage: string;
-    employment: string;
-    contract: string;
-    arrangement: string;
+    isWage: boolean;
+    minWage: number | string;
+    maxWage: number | string;
+    detail: string;
+}
+
+export type WageRange = {
+    minWage: number | string;
+    maxWage: number | string;
 }
