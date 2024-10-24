@@ -1,4 +1,4 @@
-import { Input, WageRange } from './types.js';
+import { Input } from './types.js';
 import { defaultWageRange, JOBS_PER_PAGE } from './constants.js';
 
 export const formSearchUrl = (inputObject: Input) => {
@@ -73,4 +73,11 @@ export const formWageRange = (wageString:string) => {
         range.maxWage = Number(cleanString);
     }
     return range;
+};
+
+export const formatDescription = (description: string = '') => {
+    return description.trim()
+        .replace(/&nbsp;/g, ' ')
+        .replace(/\u200B|\u200C|\u200D|\uFEFF/g, '')
+        .replace(/\s+/g, ' ');
 };

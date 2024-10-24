@@ -38,14 +38,14 @@ This scraper collects information about open positions. Filtering in search quer
 ### Dataset item example:
 ```json
 {
-    "id": 2000386924,
-    "link": "https://www.jobs.cz/rpd/2000386924/",
-    "employer": "COLD GROUP s.r.o",
-    "title": "Realitní Makléř specializující se na prodej Dubajských nemovitostí pro Českou klientelu",
-    "locality": "Praha – Stodůlky",
+    "id": 2000098801,
+    "link": "https://www.jobs.cz/rpd/2000098801/?searchId=c3567c0f-9678-428d-998d-ad6292ad1066&rps=233",
+    "employer": "Prochazka & Partners s.r.o.",
+    "title": "Business Development Manager",
+    "locality": "Praha – Nové Město",
     "isWage": true,
-    "minWage": 200000,
-    "maxWage": 400000,
+    "minWage": 50000,
+    "maxWage": 70000,
     "detail": "Detail nabídky Realitní Makléř specializující se na prodej Dubajských nemovitostí pro Českou klientelu+Společnost COLD GROUP s.r.o.Sluneční náměstí 2583/11, Praha – Stodůlky Plat 200 000 ‍–‍ 400 000 KčDo 2 týdnů dostanete odpověď Do 2 týdnů dostanete odpověď...."
 }
 ```

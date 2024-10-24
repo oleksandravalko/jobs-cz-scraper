@@ -1,7 +1,7 @@
 import { createCheerioRouter } from 'crawlee';
 import { Actor, log } from 'apify';
 import { defaultWageRange, LABELS } from './constants.js';
-import { formWageRange, formSearchUrl, pagesAmount } from './utils.js';
+import { formatDescription, formSearchUrl, formWageRange, pagesAmount } from './utils.js';
 import { Job, Request, WageRange } from './types.js';
 
 export const router = createCheerioRouter();
@@ -49,55 +49,83 @@ router.addHandler(LABELS.entry, async ({ $, crawler, request }) => {
             });
         }
 
-        log.info(`Page link(s) added to requestQueue: ${pageLinks.length}.`);
+        log.info(`Search results page link(s) added to requestQueue: ${pageLinks.length}.`);
 
         await crawler.addRequests(pageLinks);
     } else {
         // URL is valid, but no relevant jobs were found
-        log.warning('No matching jobs found. Please modify your search parameters and try again.');
+        log.warning('No matching jobs found. Please provide with a link or modify your search parameters and try again.');
     }
 });
 
-router.addHandler(LABELS.list, async ({ $, request }) => {
+router.addHandler(LABELS.list, async ({ $, crawler, request }) => {
     const jobsElements = $('article.SearchResultCard');
 
-    log.info(`Visiting page #${request.userData.pageNumber} by link ${request.url}.`);
     log.info(`Page #${request.userData.pageNumber}: ${jobsElements.length} job(s) in total.`);
 
-    const jobs: Job[] = [];
+    const detailRequests: Request[] = [];
 
     for (const item of jobsElements) {
         const jobElement = $(item);
+
         const titleElement = jobElement.find('h2[data-test-ad-title] a');
         const id = Number(titleElement.attr('data-jobad-id'));
-        log.info(`Id: ${id}`);
         const link = titleElement.attr('href') || `jobs.cz/prace/rpd/${id}`;
-        log.info(`Link: ${link}`);
         const title = titleElement.text().replace(/\s+/g, ' ').trim();
-        log.info(`Title: ${title}`);
+
         const employerElement = jobElement.find('.SearchResultCard__footerItem>span');
         const employer = employerElement.text().trim();
-        log.info(`Employer: ${employer}`);
+
         const localityElement = jobElement.find('li[data-test="serp-locality"]');
         const locality = localityElement.text().trim();
-        log.info(`Locality: ${locality}`);
+
         const wageElement = jobElement.find('.SearchResultCard__body span.Tag--success');
         const isWage = !!wageElement.length;
-
         const wageRange: WageRange = isWage ? formWageRange(wageElement.text()) : defaultWageRange;
 
-        log.info(`Wage: ${wageRange.minWage} - ${wageRange.maxWage}`);
-
-        jobs.push({
-            id,
-            link,
-            employer,
-            title,
-            locality,
-            isWage,
-            ...wageRange,
-            detail: 'string',
-        });
+        const detailPageRequest: Request = {
+            url: link,
+            label: LABELS.detail,
+            userData: {
+                jobData: {
+                    id,
+                    link,
+                    employer,
+                    title,
+                    locality,
+                    isWage,
+                    ...wageRange,
+                },
+            },
+        };
+        detailRequests.push(detailPageRequest);
     }
-    await Actor.pushData(jobs);
+
+    await crawler.addRequests(detailRequests);
+});
+
+router.addHandler(LABELS.detail, async ({ $, request }) => {
+    let descriptionElement;
+
+    if (request.url.startsWith('https://www.jobs.cz/')) {
+        descriptionElement = $('div[data-visited-position]');
+    } else {
+        const possibleDescriptionSelectors = ['body', '.main', '#main', 'main', '#vacancy-detail'];
+
+        for (const selector of possibleDescriptionSelectors) {
+            const altElement = $(selector);
+            if (altElement.length) { // assuming that every page has <body>
+                descriptionElement = altElement;
+            }
+        }
+    }
+
+    const description = formatDescription(descriptionElement?.text());
+
+    const job: Job = {
+        ...request.userData.jobData,
+        description,
+    };
+
+    await Actor.pushData(job);
 });

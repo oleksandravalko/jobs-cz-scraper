@@ -1,6 +1,6 @@
 import { Actor, log } from 'apify';
 import { CheerioCrawler } from 'crawlee';
-import { Input } from './types.js';
+import { Input, Request } from './types.js';
 import { defaultInput, LABELS } from './constants.js';
 import { formSearchUrl } from './utils.js';
 import { router } from './routes.js';
@@ -29,15 +29,17 @@ const crawler = new CheerioCrawler({
     requestHandler: router,
 });
 
-await crawler.addRequests([
-    {
-        url: entryPageUrl,
-        label: LABELS.entry,
-        userData: {
-            input,
-        },
+const entryRequest: Request = {
+    url: entryPageUrl,
+    label: LABELS.entry,
+    userData: {
+        input,
     },
-]);
+};
+const entryPageRequests: Request[] = [
+    entryRequest,
+];
+await crawler.addRequests(entryPageRequests);
 
 log.info('Starting the crawl from the search page:', { url: entryPageUrl });
 await crawler.run();

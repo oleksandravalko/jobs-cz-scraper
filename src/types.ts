@@ -14,7 +14,7 @@ export type Input = {
 export type Request = {
     url: string,
     label: string,
-    userData?: Record<string, string|number>
+    userData?: Record<string, unknown>
 }
 
 export type Job = {
@@ -26,7 +26,7 @@ export type Job = {
     isWage: boolean;
     minWage: number | string;
     maxWage: number | string;
-    detail: string;
+    description?: string;
 }
 
 export type WageRange = {
