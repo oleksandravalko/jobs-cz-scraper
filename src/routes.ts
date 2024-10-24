@@ -105,22 +105,29 @@ router.addHandler(LABELS.list, async ({ $, crawler, request }) => {
 });
 
 router.addHandler(LABELS.detail, async ({ $, request }) => {
-    let descriptionElement;
+    let rawDescription = '';
 
     if (request.url.startsWith('https://www.jobs.cz/')) {
-        descriptionElement = $('div[data-visited-position]');
+        // more specific selection thanks to the standard jobs.cz template
+        const descriptionPartElements = $('div[data-visited-position]>div');
+        for (let i = 0; i < 4; i++) {
+            rawDescription += $(descriptionPartElements[i]).text();
+        }
     } else {
+        // List of selectors is based on the observation. Assumptions:
+        // 1. Every page has <body>, so 'body' is default selector;
+        // 2. For other selectors, there is only one element returned, if any.
         const possibleDescriptionSelectors = ['body', '.main', '#main', 'main', '#vacancy-detail'];
 
         for (const selector of possibleDescriptionSelectors) {
             const altElement = $(selector);
-            if (altElement.length) { // assuming that every page has <body>
-                descriptionElement = altElement;
+            if (altElement.length) {
+                rawDescription = altElement.text();
             }
         }
     }
 
-    const description = formatDescription(descriptionElement?.text());
+    const description = formatDescription(rawDescription);
 
     const job: Job = {
         ...request.userData.jobData,
