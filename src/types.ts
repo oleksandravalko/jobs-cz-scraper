@@ -11,12 +11,6 @@ export type Input = {
     arrangement: string
 }
 
-export type Request = {
-    url: string,
-    label: string,
-    userData?: Record<string, unknown>
-}
-
 export type Job = {
     id: number;
     link: string;

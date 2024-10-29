@@ -75,7 +75,7 @@ export const formWageRange = (wageString:string) => {
     return range;
 };
 
-export const formatDescription = (description: string = '') => {
+export const formatDescription = (description: string) => {
     return description.trim()
         .replace(/&nbsp;/g, ' ')
         .replace(/\u200B|\u200C|\u200D|\uFEFF/g, '')

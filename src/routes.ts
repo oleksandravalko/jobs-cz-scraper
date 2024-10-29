@@ -1,12 +1,12 @@
 import { createCheerioRouter } from 'crawlee';
-import { Actor, log } from 'apify';
-import { defaultWageRange, LABELS } from './constants.js';
+import { Actor, log, RequestQueue } from 'apify';
+import { defaultWageRange, REQUEST_LABELS, REQUEST_QUEUE_KEYS } from './constants.js';
 import { formatDescription, formSearchUrl, formWageRange, pagesAmount } from './utils.js';
-import { Job, Request, WageRange } from './types.js';
+import type { Job, WageRange } from './types.js';
 
 export const router = createCheerioRouter();
 
-router.addHandler(LABELS.entry, async ({ $, crawler, request }) => {
+router.addHandler(REQUEST_LABELS.entry, async ({ $, crawler, request }) => {
     // provided locality produce invalid URL
     if ($('title').text().trim() === 'Stránka nenalezena') {
         log.error('Invalid job filtering link. Removing locality parameter and redirecting back to search results page with your other filters applied.');
@@ -18,7 +18,7 @@ router.addHandler(LABELS.entry, async ({ $, crawler, request }) => {
         await crawler.addRequests([
             {
                 url: newEntryUrl,
-                label: LABELS.entry,
+                label: REQUEST_LABELS.entry,
                 userData: {
                     inputWithoutLocation,
                 },
@@ -37,12 +37,12 @@ router.addHandler(LABELS.entry, async ({ $, crawler, request }) => {
         log.info(`${totalJobsAmount} jobs found on ${totalPagesAmount} pages of search results.`);
 
         const entryPageUrl = request.url;
-        const pageLinks: Request[] = [];
+        const pageLinks = [];
 
         for (let i = 1; i <= totalPagesAmount; i++) {
             pageLinks.push({
                 url: `${entryPageUrl}&page=${i}`,
-                label: LABELS.list,
+                label: REQUEST_LABELS.list,
                 userData: {
                     pageNumber: i,
                 },
@@ -58,12 +58,12 @@ router.addHandler(LABELS.entry, async ({ $, crawler, request }) => {
     }
 });
 
-router.addHandler(LABELS.list, async ({ $, crawler, request }) => {
+router.addHandler(REQUEST_LABELS.list, async ({ $, crawler, request }) => {
     const jobsElements = $('article.SearchResultCard');
 
     log.info(`Page #${request.userData.pageNumber}: ${jobsElements.length} job(s) in total.`);
 
-    const detailRequests: Request[] = [];
+    const detailRequests = [];
 
     for (const item of jobsElements) {
         const jobElement = $(item);
@@ -83,9 +83,9 @@ router.addHandler(LABELS.list, async ({ $, crawler, request }) => {
         const isWage = !!wageElement.length;
         const wageRange: WageRange = isWage ? formWageRange(wageElement.text()) : defaultWageRange;
 
-        const detailPageRequest: Request = {
+        const detailPageRequest = {
             url: link,
-            label: LABELS.detail,
+            label: REQUEST_LABELS.detail,
             userData: {
                 jobData: {
                     id,
@@ -104,35 +104,31 @@ router.addHandler(LABELS.list, async ({ $, crawler, request }) => {
     await crawler.addRequests(detailRequests);
 });
 
-router.addHandler(LABELS.detail, async ({ $, request }) => {
-    let rawDescription = '';
+router.addHandler(REQUEST_LABELS.detail, async ({ $, request }) => {
+    const isJobsCz = !$('html').attr('data-host'); // determine if it's standard or customized template
 
-    if (request.url.startsWith('https://www.jobs.cz/')) {
-        // more specific selection thanks to the standard jobs.cz template
+    if (isJobsCz) {
+        let rawDescription = '';
+
         const descriptionPartElements = $('div[data-visited-position]>div');
         for (let i = 0; i < 4; i++) {
             rawDescription += $(descriptionPartElements[i]).text();
         }
+
+        const description = formatDescription(rawDescription);
+
+        const job: Job = {
+            ...request.userData.jobData,
+            description,
+        };
+
+        await Actor.pushData(job);
     } else {
-        // List of selectors is based on the observation. Assumptions:
-        // 1. Every page has <body>, so 'body' is default selector;
-        // 2. For other selectors, there is only one element returned, if any.
-        const possibleDescriptionSelectors = ['body', '.main', '#main', 'main', '#vacancy-detail'];
-
-        for (const selector of possibleDescriptionSelectors) {
-            const altElement = $(selector);
-            if (altElement.length) {
-                rawDescription = altElement.text();
-            }
-        }
+        // Cheerio crawler cannot reach dynamic content of pages with custom templates, so those request are handed to Puppeteer.
+        const puppeteerRequestQueue = await RequestQueue.open(REQUEST_QUEUE_KEYS.puppeteer);
+        await puppeteerRequestQueue.addRequests([{
+            url: request.url,
+            userData: request.userData,
+        }]);
     }
-
-    const description = formatDescription(rawDescription);
-
-    const job: Job = {
-        ...request.userData.jobData,
-        description,
-    };
-
-    await Actor.pushData(job);
 });
