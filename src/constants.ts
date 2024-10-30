@@ -2,7 +2,7 @@ import { WageRange } from './types.js';
 
 export const JOBS_PER_PAGE = 30;
 
-export const defaultInput = {
+export const DEFAULT_INPUT = {
     locality: '',
     radius: '',
     keyword: '',
@@ -13,6 +13,7 @@ export const defaultInput = {
     education: '',
     languageSkill: [],
     arrangement: '',
+    searchUrls: [],
 };
 
 export const REQUEST_LABELS = {
@@ -25,5 +26,3 @@ export const defaultWageRange: WageRange = {
     minWage: 'N/a',
     maxWage: 'N/a',
 };
-
-export const possibleSelectors = ['#vacancy-detail', '#widget_container', 'body']; // pool is based on observation, backed up by <body>

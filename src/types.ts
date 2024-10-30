@@ -8,8 +8,14 @@ export type Input = {
     contract: string[],
     education: string,
     languageSkill: string[],
-    arrangement: string
+    arrangement: string,
+    searchUrls: UserProvidedUrl[],
 }
+
+export type UserProvidedUrl = {
+    url: string,
+}
+export type JobSearchParams = Omit<Input, 'searchUrls'>
 
 export type Job = {
     id: number;

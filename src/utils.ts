@@ -1,7 +1,7 @@
-import { Input } from './types.js';
-import { defaultWageRange, JOBS_PER_PAGE } from './constants.js';
+import { JobSearchParams, UserProvidedUrl } from './types.js';
+import { defaultWageRange, JOBS_PER_PAGE, REQUEST_LABELS } from './constants.js';
 
-export const formSearchUrl = (inputObject: Input) => {
+export const formSearchUrl = (jobSearchParams: JobSearchParams) => {
     const {
         locality,
         radius,
@@ -13,7 +13,7 @@ export const formSearchUrl = (inputObject: Input) => {
         education,
         languageSkill,
         arrangement,
-    } = inputObject;
+    } = jobSearchParams;
 
     const baseUrl = locality ? `https://www.jobs.cz/prace/${locality.toLowerCase().replace(' ', '-')}/` : 'https://www.jobs.cz/prace/';
 
@@ -48,6 +48,21 @@ export const formSearchUrl = (inputObject: Input) => {
     url.search = searchParams.toString();
 
     return url.toString();
+};
+
+export const formEntryRequestsUrls = (urlArray: UserProvidedUrl[]) => {
+    const requests = [];
+
+    for (const url of urlArray) {
+        requests.push(
+            {
+                ...url,
+                label: REQUEST_LABELS.entry,
+            },
+        );
+    }
+
+    return requests;
 };
 
 export const pagesAmount = (jobsAmount: number) => {

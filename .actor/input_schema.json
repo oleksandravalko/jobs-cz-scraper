@@ -174,6 +174,17 @@
                 "Práce převážně z domova (mostly working from home)",
                 "Flexibilní pracovní doba (flexible working hours)"
             ]
+        },
+        "searchUrls": {
+            "title": "Search URLs",
+            "type": "array",
+            "description": "Ready URLs to start job search with.",
+            "editor": "requestListSources",
+            "prefill": [
+                {
+                    "url": "https://jobs.cz/prace"
+                }
+            ]
         }
     }
 }
