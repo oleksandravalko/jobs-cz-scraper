@@ -3,6 +3,7 @@ import { Actor, log, RequestQueue } from 'apify';
 import { defaultWageRange, REQUEST_LABELS, REQUEST_QUEUE_KEYS } from './constants.js';
 import { formatDescription, formSearchUrl, formWageRange, pagesAmount } from './utils.js';
 import type { Job, WageRange } from './types.js';
+import { myRq } from './storages.js';
 
 export const router = createCheerioRouter();
 
@@ -107,28 +108,29 @@ router.addHandler(REQUEST_LABELS.list, async ({ $, crawler, request }) => {
 router.addHandler(REQUEST_LABELS.detail, async ({ $, request }) => {
     const isJobsCz = !$('html').attr('data-host'); // determine if it's standard or customized template
 
-    if (isJobsCz) {
-        let rawDescription = '';
-
-        const descriptionPartElements = $('div[data-visited-position]>div');
-        for (let i = 0; i < 4; i++) {
-            rawDescription += $(descriptionPartElements[i]).text();
-        }
-
-        const description = formatDescription(rawDescription);
-
-        const job: Job = {
-            ...request.userData.jobData,
-            description,
-        };
-
-        await Actor.pushData(job);
-    } else {
+    if (!isJobsCz) {
         // Cheerio crawler cannot reach dynamic content of pages with custom templates, so those request are handed to Puppeteer.
-        const puppeteerRequestQueue = await RequestQueue.open(REQUEST_QUEUE_KEYS.puppeteer);
-        await puppeteerRequestQueue.addRequests([{
+        await myRq.addRequests([{
             url: request.url,
             userData: request.userData,
         }]);
+
+        return;
     }
+
+    let rawDescription = '';
+
+    const descriptionPartElements = $('div[data-visited-position]>div');
+    for (let i = 0; i < 4; i++) {
+        rawDescription += $(descriptionPartElements[i]).text();
+    }
+
+    const description = formatDescription(rawDescription);
+
+    const job: Job = {
+        ...request.userData.jobData,
+        description,
+    };
+
+    await Actor.pushData(job);
 });

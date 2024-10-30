@@ -22,13 +22,14 @@
 	},
 	"scripts": {
 		"start": "npm run start:dev",
-		"start:prod": "node dist/main.js",
-		"start:dev": "tsx src/main.ts",
+		"start:prod": "node dist/start.js",
+		"start:dev": "tsx src/start.ts",
 		"build": "tsc",
 		"lint": "eslint ./src --ext .ts",
 		"lint:fix": "eslint ./src --ext .ts --fix",
-		"test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1"
-	},
+		"test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1",
+        "run": "apify run -p"
+    },
 	"author": "It's not you it's me",
 	"license": "ISC"
 }

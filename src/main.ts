@@ -1,11 +1,10 @@
-import { Actor, Dataset, log, RequestQueue } from 'apify';
-import { CheerioCrawler, KeyValueStore, PuppeteerCrawler } from 'crawlee';
-import type { Input } from './types.js';
+import { Actor, log, RequestQueue } from 'apify';
+import { CheerioCrawler, PuppeteerCrawler } from 'crawlee';
+import type { Input, Job } from './types.js';
 import { defaultInput, REQUEST_LABELS, REQUEST_QUEUE_KEYS } from './constants.js';
-import { formSearchUrl } from './utils.js';
+import { formatDescription, formSearchUrl } from './utils.js';
 import { router } from './routes.js';
-
-await Actor.init();
+import { myRq } from './storages.js';
 
 const input = (await Actor.getInput<Input>()) ?? defaultInput;
 
@@ -16,17 +15,17 @@ const proxyConfiguration = await Actor.createProxyConfiguration({
     countryCode: 'CZ',
 });
 
-const cheerioRequestQueue = await RequestQueue.open(REQUEST_QUEUE_KEYS.cheerio);
-if (!cheerioRequestQueue.isEmpty()) { await cheerioRequestQueue.drop(); }
-await cheerioRequestQueue.addRequests([{
-    url: entryPageUrl,
-    label: REQUEST_LABELS.entry,
-    userData: {
-        input,
-    },
-}]);
+// const cheerioRequestQueue = await RequestQueue.open(REQUEST_QUEUE_KEYS.cheerio);
+// await cheerioRequestQueue.addRequests([{
+//     url: entryPageUrl,
+//     label: REQUEST_LABELS.entry,
+//     userData: {
+//         input,
+//     },
+// }]);
+
 const cheerioCrawler = new CheerioCrawler({
-    requestQueue: cheerioRequestQueue,
+    // requestQueue: cheerioRequestQueue,
     proxyConfiguration,
     sessionPoolOptions: {
         persistStateKey: 'JOBS-SESSIONS-CHEERIO',
@@ -39,10 +38,21 @@ const cheerioCrawler = new CheerioCrawler({
     requestHandler: router,
 });
 
+await cheerioCrawler.addRequests([{
+    url: entryPageUrl,
+    label: REQUEST_LABELS.entry,
+    userData: {
+        input,
+    },
+}]);
+
+log.info(`Starting the cheerioCrawler from the search page: ${entryPageUrl}`);
+await cheerioCrawler.run();
+
 const puppeteerRequestQueue = await RequestQueue.open(REQUEST_QUEUE_KEYS.puppeteer);
-if (!puppeteerRequestQueue.isEmpty()) { await puppeteerRequestQueue.drop(); }
+
 const puppeteerCrawler = new PuppeteerCrawler({
-    requestQueue: puppeteerRequestQueue,
+    requestQueue: myRq,
     proxyConfiguration,
     maxRequestRetries: 0,
     sessionPoolOptions: {
@@ -54,19 +64,23 @@ const puppeteerCrawler = new PuppeteerCrawler({
     },
     headless: false,
     requestHandler: async (context) => {
-        const { page, request, response } = context;
+        const { page, request } = context;
+        await page.waitForNetworkIdle();
 
-        const html = await page.content();
-        await KeyValueStore.setValue('html', html);
-        const status = response?.status();
-        setTimeout(() => { log.info(`Reached ${request.url} with puppeteer. Status: ${status}.`); }, 1000);
+        const rawDescription = await page.evaluate(() => {
+            return document.querySelector('#vacancy-detail')?.textContent;
+        });
+
+        const job: Job = {
+            ...request.userData.jobData,
+            description: rawDescription ? formatDescription(rawDescription) : '',
+        };
+
+        await Actor.pushData(job);
     },
 });
 
-log.info(`Starting the crawl from the search page: ${entryPageUrl}`);
-await cheerioCrawler.run();
-
-log.info(`Proceeding with puppeteerCrawler handling ${puppeteerRequestQueue.getTotalCount()} requests.`);
+log.info(`Proceeding with the puppeteerCrawler handling ${myRq.getTotalCount()} request(s).`);
 await puppeteerCrawler.run();
 
-await Actor.exit();
+await puppeteerRequestQueue.drop();
