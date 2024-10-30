@@ -1,9 +1,9 @@
 import { createCheerioRouter } from 'crawlee';
-import { Actor, log, RequestQueue } from 'apify';
-import { defaultWageRange, REQUEST_LABELS, REQUEST_QUEUE_KEYS } from './constants.js';
+import { Actor, log } from 'apify';
+import { defaultWageRange, REQUEST_LABELS } from './constants.js';
 import { formatDescription, formSearchUrl, formWageRange, pagesAmount } from './utils.js';
 import type { Job, WageRange } from './types.js';
-import { myRq } from './storages.js';
+import { puppeteerRequestQueue } from './storages.js';
 
 export const router = createCheerioRouter();
 
@@ -110,7 +110,7 @@ router.addHandler(REQUEST_LABELS.detail, async ({ $, request }) => {
 
     if (!isJobsCz) {
         // Cheerio crawler cannot reach dynamic content of pages with custom templates, so those request are handed to Puppeteer.
-        await myRq.addRequests([{
+        await puppeteerRequestQueue.addRequests([{
             url: request.url,
             userData: request.userData,
         }]);

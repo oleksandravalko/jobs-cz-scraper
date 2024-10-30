@@ -1,10 +1,11 @@
-import { Actor, log, RequestQueue } from 'apify';
+import { Actor, log } from 'apify';
 import { CheerioCrawler, PuppeteerCrawler } from 'crawlee';
+import { Page } from 'puppeteer';
 import type { Input, Job } from './types.js';
-import { defaultInput, REQUEST_LABELS, REQUEST_QUEUE_KEYS } from './constants.js';
+import { defaultInput, REQUEST_LABELS } from './constants.js';
 import { formatDescription, formSearchUrl } from './utils.js';
 import { router } from './routes.js';
-import { myRq } from './storages.js';
+import { puppeteerRequestQueue } from './storages.js';
 
 const input = (await Actor.getInput<Input>()) ?? defaultInput;
 
@@ -15,17 +16,7 @@ const proxyConfiguration = await Actor.createProxyConfiguration({
     countryCode: 'CZ',
 });
 
-// const cheerioRequestQueue = await RequestQueue.open(REQUEST_QUEUE_KEYS.cheerio);
-// await cheerioRequestQueue.addRequests([{
-//     url: entryPageUrl,
-//     label: REQUEST_LABELS.entry,
-//     userData: {
-//         input,
-//     },
-// }]);
-
 const cheerioCrawler = new CheerioCrawler({
-    // requestQueue: cheerioRequestQueue,
     proxyConfiguration,
     sessionPoolOptions: {
         persistStateKey: 'JOBS-SESSIONS-CHEERIO',
@@ -49,10 +40,8 @@ await cheerioCrawler.addRequests([{
 log.info(`Starting the cheerioCrawler from the search page: ${entryPageUrl}`);
 await cheerioCrawler.run();
 
-const puppeteerRequestQueue = await RequestQueue.open(REQUEST_QUEUE_KEYS.puppeteer);
-
 const puppeteerCrawler = new PuppeteerCrawler({
-    requestQueue: myRq,
+    requestQueue: puppeteerRequestQueue,
     proxyConfiguration,
     maxRequestRetries: 0,
     sessionPoolOptions: {
@@ -65,22 +54,30 @@ const puppeteerCrawler = new PuppeteerCrawler({
     headless: false,
     requestHandler: async (context) => {
         const { page, request } = context;
-        await page.waitForNetworkIdle();
+
+        await page.waitForNetworkIdle({ idleTime: 1000 });
 
         const rawDescription = await page.evaluate(() => {
-            return document.querySelector('#vacancy-detail')?.textContent;
+            const possibleSelectors = ['#vacancy-detail', 'main', '.main', 'body']; // pool is based on observation, backed up by <body>
+            let currDescription = '';
+            for (const selector of possibleSelectors) {
+                if (!currDescription) {
+                    currDescription = document.querySelector(selector)?.textContent || '';
+                }
+            }
+            return currDescription;
         });
 
         const job: Job = {
             ...request.userData.jobData,
-            description: rawDescription ? formatDescription(rawDescription) : '',
+            description: formatDescription(rawDescription),
         };
 
         await Actor.pushData(job);
     },
 });
 
-log.info(`Proceeding with the puppeteerCrawler handling ${myRq.getTotalCount()} request(s).`);
+log.info(`Proceeding with the puppeteerCrawler handling ${puppeteerRequestQueue.getTotalCount()} request(s).`);
 await puppeteerCrawler.run();
 
 await puppeteerRequestQueue.drop();
