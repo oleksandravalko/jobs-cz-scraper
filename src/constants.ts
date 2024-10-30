@@ -25,3 +25,5 @@ export const defaultWageRange: WageRange = {
     minWage: 'N/a',
     maxWage: 'N/a',
 };
+
+export const possibleSelectors = ['#vacancy-detail', '#widget_container', 'body']; // pool is based on observation, backed up by <body>

@@ -1,8 +1,7 @@
 import { Actor, log } from 'apify';
 import { CheerioCrawler, PuppeteerCrawler } from 'crawlee';
-import { Page } from 'puppeteer';
 import type { Input, Job } from './types.js';
-import { defaultInput, REQUEST_LABELS } from './constants.js';
+import { defaultInput, possibleSelectors, REQUEST_LABELS } from './constants.js';
 import { formatDescription, formSearchUrl } from './utils.js';
 import { router } from './routes.js';
 import { puppeteerRequestQueue } from './storages.js';
@@ -58,7 +57,6 @@ const puppeteerCrawler = new PuppeteerCrawler({
         await page.waitForNetworkIdle({ idleTime: 1000 });
 
         const rawDescription = await page.evaluate(() => {
-            const possibleSelectors = ['#vacancy-detail', 'main', '.main', 'body']; // pool is based on observation, backed up by <body>
             let currDescription = '';
             for (const selector of possibleSelectors) {
                 if (!currDescription) {
