@@ -53,11 +53,14 @@ const puppeteerCrawler = new PuppeteerCrawler({
             maxErrorScore: 1,
         },
     },
-    headless: false,
+    // headless: false,
     requestHandler: async (context) => {
         const { page, request } = context;
 
-        await page.waitForNetworkIdle({ idleTime: 1000 });
+        await page.waitForNetworkIdle({
+            timeout: 60000,
+            idleTime: 1000,
+        });
 
         const rawDescription = await page.evaluate(() => {
             let currDescription = '';
