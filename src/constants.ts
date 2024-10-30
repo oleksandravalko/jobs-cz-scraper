@@ -1,5 +1,7 @@
 import { WageRange } from './types.js';
 
+export const BASE_URL = 'https://www.jobs.cz/prace/';
+
 export const JOBS_PER_PAGE = 30;
 
 export const DEFAULT_INPUT = {

@@ -10,12 +10,16 @@ Jobs.cz is an online job vacancies platform. It hosts job opportunities from acr
 This scraper collects information about open positions. It supports filtering based on search parameters provided as input, which map to the options available on the Jobs.cz website.
 
 ### Mechanism
-1. The actor forms the search URL based on the filtering parameters provided as input.
+1. List of search URLs is being created based on provided input.
+   * If search parameters are not provided and there is no search url either, all job available opportunities will be scraped.
+   * If user search links are present, search link with no parameters won't be added to the queue. User provided links are always included.
+   * If search parameters are provided, proceed to next step.
+2. The actor forms the search URL based on the filtering parameters provided as input.
     * If jobs are found, the actor calculates the total number of pages and enqueues links to them.
     * If the provided location parameter cannot be effectively inserted into the URL, the actor continues the search without it.
     * If the parameters are valid but no relevant jobs are found, the user is informed and asked to change the parameters.
-2. The actor visits all the search results pages, including those provided directly by the user, and scrapes the core information.
-3. The actor proceeds to the job detail pages.
+3. The actor visits all the search results pages, including those provided directly by the user, and scrapes the core information.
+4. The actor proceeds to the job detail pages.
     * Job detail pages come in two types: standard and customized.
     - The Cheerio crawler is used for standard pages, and Puppeteer for customized ones.
 

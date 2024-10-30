@@ -1,5 +1,5 @@
 import { JobSearchParams, UserProvidedUrl } from './types.js';
-import { defaultWageRange, JOBS_PER_PAGE, REQUEST_LABELS } from './constants.js';
+import { BASE_URL, defaultWageRange, JOBS_PER_PAGE, REQUEST_LABELS } from './constants.js';
 
 export const formSearchUrl = (jobSearchParams: JobSearchParams) => {
     const {
@@ -15,7 +15,7 @@ export const formSearchUrl = (jobSearchParams: JobSearchParams) => {
         arrangement,
     } = jobSearchParams;
 
-    const baseUrl = locality ? `https://www.jobs.cz/prace/${locality.toLowerCase().replace(' ', '-')}/` : 'https://www.jobs.cz/prace/';
+    const baseUrl = locality ? `${BASE_URL}${locality.toLowerCase().replace(' ', '-')}/` : BASE_URL;
 
     const searchParams = new URLSearchParams();
 
