@@ -7,9 +7,9 @@
 		"node": ">=18.0.0"
 	},
 	"dependencies": {
-		"apify": "^3.1.10",
-		"crawlee": "^3.5.4",
-		"puppeteer": "^23.6.1"
+		"apify": "3.2.6",
+		"crawlee": "3.11.5",
+		"puppeteer": "23.6.1"
 	},
 	"devDependencies": {
 		"@apify/eslint-config-ts": "^0.3.0",
