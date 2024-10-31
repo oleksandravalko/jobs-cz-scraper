@@ -91,6 +91,7 @@ export const formWageRange = (wageString:string) => {
             maxWage: Number(cleanString),
         };
     }
+
     return range;
 };
 

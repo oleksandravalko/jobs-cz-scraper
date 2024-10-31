@@ -22,7 +22,6 @@
 	},
 	"scripts": {
 		"start": "npm run start:dev",
-		"start-apify-jobscz": "apify run -p",
 		"start:prod": "node dist/start.js",
 		"start:dev": "tsx src/start.ts",
 		"build": "tsc",

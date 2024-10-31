@@ -60,6 +60,7 @@ router.addHandler(REQUEST_LABELS.entry, async ({ $, crawler, request }) => {
                 },
             });
         }
+
         await crawler.addRequests(pageLinks);
         return;
     }
@@ -79,7 +80,6 @@ router.addHandler(REQUEST_LABELS.entry, async ({ $, crawler, request }) => {
             }
         }
 
-        log.info(`Search results page link(s) added to requestQueue: ${pageLinks.length}.`);
         await crawler.addRequests(pageLinks);
     }
 });

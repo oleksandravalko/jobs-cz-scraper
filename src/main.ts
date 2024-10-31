@@ -48,50 +48,50 @@ const cheerioCrawler = new CheerioCrawler({
 
 await cheerioCrawler.addRequests(entryRequests);
 
-log.info(`Starting the cheerioCrawler with ${entryRequests.length} search pages.`);
+log.info(`Starting the cheerioCrawler with ${entryRequests.length} search page(s).`);
 await cheerioCrawler.run();
 
-const puppeteerCrawler = new PuppeteerCrawler({
-    requestQueue: puppeteerRequestQueue,
-    proxyConfiguration,
-    maxRequestRetries: 0,
-    sessionPoolOptions: {
-        persistStateKey: 'JOBS-SESSIONS-PUPPETEER',
-        sessionOptions: {
-            maxUsageCount: 3,
-            maxErrorScore: 1,
+// start crawler only if it has requests to handle
+if (puppeteerRequestQueue.getTotalCount()) {
+    const puppeteerCrawler = new PuppeteerCrawler({
+        requestQueue: puppeteerRequestQueue,
+        proxyConfiguration,
+        maxRequestRetries: 0,
+        sessionPoolOptions: {
+            persistStateKey: 'JOBS-SESSIONS-PUPPETEER',
+            sessionOptions: {
+                maxUsageCount: 3,
+                maxErrorScore: 1,
+            },
         },
-    },
-    // headless: false,
-    requestHandler: async (context) => {
-        const { page, request } = context;
+        requestHandler: async (context) => {
+            const { page, request } = context;
 
-        await page.waitForNetworkIdle({
-            timeout: 60000,
-            idleTime: 1000,
-        });
+            await page.waitForNetworkIdle({
+                timeout: 60000,
+                idleTime: 1000,
+            });
 
-        const rawDescription = await page.evaluate(() => {
-            let currDescription = '';
-            const possibleSelectors = ['#vacancy-detail', '#widget_container', 'body']; // pool is based on observation, backed up by <body>
-            for (const selector of possibleSelectors) {
-                if (!currDescription) {
-                    currDescription = document.querySelector(selector)?.textContent || '';
+            const rawDescription = await page.evaluate(() => {
+                let currDescription = '';
+                const possibleSelectors = ['#vacancy-detail', '#widget_container', 'body']; // pool is based on observation, backed up by <body>
+                for (const selector of possibleSelectors) {
+                    if (!currDescription) {
+                        currDescription = document.querySelector(selector)?.textContent || '';
+                    }
                 }
-            }
-            return currDescription;
-        });
+                return currDescription;
+            });
 
-        const job: Job = {
-            ...request.userData.jobData,
-            description: formatDescription(rawDescription),
-        };
+            const job: Job = {
+                ...request.userData.jobData,
+                description: formatDescription(rawDescription),
+            };
 
-        await Actor.pushData(job);
-    },
-});
+            await Actor.pushData(job);
+        },
+    });
 
-log.info(`Proceeding with the puppeteerCrawler handling ${puppeteerRequestQueue.getTotalCount()} request(s).`);
-await puppeteerCrawler.run();
-
-await puppeteerRequestQueue.drop();
+    log.info(`Proceeding with the puppeteerCrawler handling ${puppeteerRequestQueue.getTotalCount()} request(s).`);
+    await puppeteerCrawler.run();
+}
