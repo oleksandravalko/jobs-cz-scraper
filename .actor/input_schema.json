@@ -7,8 +7,7 @@
             "title": "Kde?",
             "type": "string",
             "description": "Location: city or region",
-            "editor": "textfield",
-            "prefill": "Praha"
+            "editor": "textfield"
         },
         "radius": {
             "title": "Radius",
@@ -38,8 +37,7 @@
             "type": "string",
             "description": "Name of firm or professional field",
             "editor": "textfield",
-            "default": "",
-            "prefill": "Skladnik"
+            "default": ""
         },
         "date": {
             "title": "Čas zveřejnění",
@@ -64,8 +62,7 @@
             "title": "Plat",
             "type": "string",
             "description": "Minimum deserved level of income",
-            "editor": "textfield",
-            "prefill": ""
+            "editor": "textfield"
         },
         "employment": {
             "title": "Úvazek",
@@ -182,7 +179,7 @@
             "editor": "requestListSources",
             "prefill": [
                 {
-                    "url": "https://jobs.cz/prace"
+                    "url": "https://jobs.cz/prace/"
                 }
             ]
         }
