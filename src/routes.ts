@@ -107,7 +107,7 @@ router.addHandler(REQUEST_LABELS.list, async ({ $, crawler, request }) => {
 
         const wageElement = jobElement.find('.SearchResultCard__body span.Tag--success');
         const isWage = !!wageElement.length;
-        const wageRange: WageRange = isWage ? formWageRange(wageElement.text()) : defaultWageRange;
+        const wageRange: WageRange = isWage ? formWageRange(wageElement.text()) : { ...defaultWageRange };
 
         const detailPageRequest = {
             url: link,

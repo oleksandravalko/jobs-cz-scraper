@@ -1,5 +1,5 @@
-import { JobSearchParams, UserProvidedUrl } from './types.js';
-import { BASE_URL, defaultWageRange, JOBS_PER_PAGE, REQUEST_LABELS } from './constants.js';
+import { JobSearchParams, UserProvidedUrl, WageRange } from './types.js';
+import { BASE_URL, JOBS_PER_PAGE, REQUEST_LABELS } from './constants.js';
 
 export const formSearchUrl = (jobSearchParams: JobSearchParams) => {
     const {
@@ -77,15 +77,19 @@ export const formWageRange = (wageString:string) => {
         .replace(/\s+/g, '')
         .replace('Kč', '');
 
-    const range = defaultWageRange;
+    let range: WageRange|undefined;
 
     if (cleanString.includes('–')) {
         const extremes = cleanString.split('–');
-        range.minWage = Number(extremes[0]);
-        range.maxWage = Number(extremes[1]);
+        range = {
+            minWage: Number(extremes[0]),
+            maxWage: Number(extremes[1]),
+        };
     } else {
-        range.minWage = Number(cleanString);
-        range.maxWage = Number(cleanString);
+        range = {
+            minWage: Number(cleanString),
+            maxWage: Number(cleanString),
+        };
     }
     return range;
 };

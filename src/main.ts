@@ -20,13 +20,11 @@ const parametersBasedEntryRequest = {
 };
 // include the broadest search link (base url) only if there are no user provided urls present
 if (parametersBasedEntryUrl !== BASE_URL || (parametersBasedEntryUrl === BASE_URL && !searchUrls.length)) {
-    log.info('include parametersBasedEntryRequest');
     entryRequests.push(parametersBasedEntryRequest);
 }
 const userProvidedUrlsRequests = searchUrls ? formEntryRequestsUrls(searchUrls) : [];
 
 if (searchUrls.length) {
-    log.info('include userProvidedUrlsRequests');
     entryRequests.push(...userProvidedUrlsRequests);
 }
 
