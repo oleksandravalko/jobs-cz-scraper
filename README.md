@@ -9,8 +9,8 @@ This scraper collects information about open positions. It supports filtering ba
 
 ### Mechanism
 1. List of search URLs is being created based on provided input.
-   * If search parameters are not provided and there is no search url either, all job available opportunities will be scraped.
-   * If user search links are present, search link with no parameters won't be added to the queue. User provided links are always included.
+   * If search parameters are not provided and there is no search url either, all available jobs will be scraped.
+   * If user search links are present, search link with no parameters won't be added to the queue. User provided links are always enqueued.
    * If search parameters are provided, proceed to next step.
 2. The actor forms the search URL based on the filtering parameters provided as input.
     * If jobs are found, the actor calculates the total number of pages and enqueues links to them.
@@ -19,10 +19,11 @@ This scraper collects information about open positions. It supports filtering ba
 3. The actor visits all the search results pages, including those provided directly by the user, and scrapes the core information.
 4. The actor proceeds to the job detail pages.
     * Job detail pages come in two types: standard and customized.
-    - The Cheerio crawler is used for standard pages, and Puppeteer for customized ones.
+    * The Cheerio crawler is used for standard pages, and Puppeteer for customized ones.
+    * If there are no custom pages, Puppeteer scraper won't run.
 
 ### Notes
-* The maximum number of found and saved jobs is 1,350, as Jobs.cz won't display more than 45 pages with 30 jobs each.
+* The maximum number of found and saved jobs is 1,330, as Jobs.cz won't display more than 45 pages with 30 jobs each (except from first one, where only 10 jobs are displayed).
 * The location filtering functionality is limited but covers all major cities, towns, and regions. Input of more than one location is not supported.
 * Input of more than one keyword in the job/employer field is not supported.
 * The location and keyword restrictions of the Actor can be overcome by providing search URLs directly in the input.

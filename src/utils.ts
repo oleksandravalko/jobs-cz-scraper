@@ -1,5 +1,14 @@
+import { log } from 'apify';
 import { JobSearchParams, UserProvidedUrl, WageRange } from './types.js';
 import { BASE_URL, JOBS_PER_PAGE, REQUEST_LABELS } from './constants.js';
+
+const formatWord = (string:string) => {
+    return string
+        .toLowerCase()
+        .replace(/ /g, '-')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+};
 
 export const formSearchUrl = (jobSearchParams: JobSearchParams) => {
     const {
@@ -15,12 +24,12 @@ export const formSearchUrl = (jobSearchParams: JobSearchParams) => {
         arrangement,
     } = jobSearchParams;
 
-    const baseUrl = locality ? `${BASE_URL}${locality.toLowerCase().replace(' ', '-')}/` : BASE_URL;
+    const baseUrl = locality ? `${BASE_URL}${formatWord(locality)}/` : BASE_URL;
 
     const searchParams = new URLSearchParams();
 
     // adding individual items to searchParams
-    if (keyword) searchParams.append('q[]', keyword.replace(' ', '-'));
+    if (keyword) searchParams.append('q[]', formatWord(keyword));
     if (date) searchParams.append('date', date.toString());
     if (salary) searchParams.append('salary', salary.toString());
 
@@ -47,6 +56,7 @@ export const formSearchUrl = (jobSearchParams: JobSearchParams) => {
     const url = new URL(baseUrl);
     url.search = searchParams.toString();
 
+    log.info(url.toString());
     return url.toString();
 };
 
