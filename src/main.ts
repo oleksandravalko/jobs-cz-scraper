@@ -19,12 +19,14 @@ const parametersBasedEntryRequest = {
     },
 };
 // include the broadest search link (base url) only if there are no user provided urls present
-if (parametersBasedEntryUrl !== BASE_URL || (parametersBasedEntryUrl === BASE_URL && !searchUrls)) {
+if (parametersBasedEntryUrl !== BASE_URL || (parametersBasedEntryUrl === BASE_URL && !searchUrls.length)) {
+    log.info('include parametersBasedEntryRequest');
     entryRequests.push(parametersBasedEntryRequest);
 }
 const userProvidedUrlsRequests = searchUrls ? formEntryRequestsUrls(searchUrls) : [];
 
-if (searchUrls) {
+if (searchUrls.length) {
+    log.info('include userProvidedUrlsRequests');
     entryRequests.push(...userProvidedUrlsRequests);
 }
 
@@ -48,7 +50,7 @@ const cheerioCrawler = new CheerioCrawler({
 
 await cheerioCrawler.addRequests(entryRequests);
 
-log.info(`Starting the cheerioCrawler from the search page: ${parametersBasedEntryUrl}`);
+log.info(`Starting the cheerioCrawler with ${entryRequests.length} search pages.`);
 await cheerioCrawler.run();
 
 const puppeteerCrawler = new PuppeteerCrawler({

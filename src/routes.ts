@@ -1,6 +1,6 @@
 import { createCheerioRouter } from 'crawlee';
 import { Actor, log } from 'apify';
-import { defaultWageRange, REQUEST_LABELS } from './constants.js';
+import { BASE_URL, defaultWageRange, MAX_PAGES_AMOUNT, REQUEST_LABELS } from './constants.js';
 import { formatDescription, formSearchUrl, formWageRange, pagesAmount } from './utils.js';
 import type { Job, WageRange } from './types.js';
 import { puppeteerRequestQueue } from './storages.js';
@@ -8,6 +8,8 @@ import { puppeteerRequestQueue } from './storages.js';
 export const router = createCheerioRouter();
 
 router.addHandler(REQUEST_LABELS.entry, async ({ $, crawler, request }) => {
+    const entryPageUrl = request.url;
+
     // provided locality produce invalid URL
     if ($('title').text().trim() === 'Stránka nenalezena') {
         log.error('Invalid job filtering link. Removing locality parameter and redirecting back to search results page with your other filters applied.');
@@ -29,40 +31,63 @@ router.addHandler(REQUEST_LABELS.entry, async ({ $, crawler, request }) => {
         return;
     }
 
-    const totalJobsAmountElement = $('.SearchHeader strong');
+    // URL is valid, but no relevant jobs were found or other issue happened
+    const alertContent = $('.Alert').text().trim();
+    if (alertContent) {
+        switch (alertContent) {
+            case 'Nenašli jsme žádné nabídky práce odpovídající zadání': {
+                log.info('No matching jobs found. Please provide with a link or modify your search parameters and try again.');
+                return;
+            }
+            case 'Zadaná stránka už není dostupná.': {
+                log.info('Page is not accessible. Continuing crawling without scraping jobs on that page.');
+                return;
+            }
+            default:
+                log.info(`Issue on the page ${entryPageUrl}: '${alertContent}'`);
+        }
+    }
 
-    if (totalJobsAmountElement.length) {
-        // jobs were found
-        const totalJobsAmount = Number(totalJobsAmountElement.text().trim()) || 1;
-        const totalPagesAmount = pagesAmount(totalJobsAmount);
-        log.info(`${totalJobsAmount} jobs found on ${totalPagesAmount} pages of search results.`);
-
-        const entryPageUrl = request.url;
+    // no parameter or user urls are provided
+    if (entryPageUrl === BASE_URL) {
         const pageLinks = [];
-
-        for (let i = 1; i <= totalPagesAmount; i++) {
+        for (let i = 1; i <= MAX_PAGES_AMOUNT; i++) {
             pageLinks.push({
-                url: `${entryPageUrl}&page=${i}`,
+                url: `${BASE_URL}?page=${i}`,
                 label: REQUEST_LABELS.list,
                 userData: {
                     pageNumber: i,
                 },
             });
         }
+        await crawler.addRequests(pageLinks);
+        return;
+    }
+
+    // relevant jobs are found
+    const totalJobsAmountElement = $('.SearchHeader strong');
+    if (totalJobsAmountElement) {
+        const totalJobsAmount = Number(totalJobsAmountElement.text().trim().replace(/&nbsp;/g, '')) || 1;
+        const totalPagesAmount = pagesAmount(totalJobsAmount);
+        const pageLinks = [];
+        if (totalPagesAmount) {
+            for (let i = 1; i <= totalPagesAmount; i++) {
+                pageLinks.push({
+                    url: `${entryPageUrl}&page=${i}`,
+                    label: REQUEST_LABELS.list,
+                });
+            }
+        }
 
         log.info(`Search results page link(s) added to requestQueue: ${pageLinks.length}.`);
-
         await crawler.addRequests(pageLinks);
-    } else {
-        // URL is valid, but no relevant jobs were found
-        log.warning('No matching jobs found. Please provide with a link or modify your search parameters and try again.');
     }
 });
 
 router.addHandler(REQUEST_LABELS.list, async ({ $, crawler, request }) => {
     const jobsElements = $('article.SearchResultCard');
 
-    log.info(`Page #${request.userData.pageNumber}: ${jobsElements.length} job(s) in total.`);
+    log.info(`${request.url}: ${jobsElements.length} job(s) in total.`);
 
     const detailRequests = [];
 
