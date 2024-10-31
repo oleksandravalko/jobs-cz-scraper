@@ -1,5 +1,3 @@
-Here is the text rewritten with better English, preserving the original markup:
-
 # Jobs.cz Scraper
 TypeScript Crawlee & CheerioCrawler & PuppeteerCrawler
 
@@ -68,19 +66,3 @@ This scraper collects information about open positions. It supports filtering ba
     "description": "D.A.S. právní ochrana, pobočka ERGO Versicherung Aktiengesellschaft pro ČR, největší evropský specialista na právní ochranu.VEDOUCÍ OBCHODNÍ SKUPINY / OBCHODNÍ ZÁSTUPCE – Liberecký krajMáte rád/a výzvy? Jste zaměřen/a na výsledky? Přes 29 let zajišťuje společnost D.A.S. našim klientům jediné pojištění právní ochrany. Bráníme slušné lidi před nespravedlivostí, nesmysly, byrokracií a neférovým přístupem. Chcete pomáhat lidem a organizacím? Je obchod součástí Vašeho životního stylu? Máte rád/a vliv na výši svého příjmu? Pokud ano, vypadá to, že hledáme právě Vás. Vaším denním chlebem bude: Hledání nových klientůZjištění potřeb klienta pro volbu té nejvhodnější službyPéče o stávající klienty🎯 Vaším výsledkem práce bude uzavřená smlouva a posilování dobrého jména značky D.A.S. Za svojí prací uvidíte klienty, kteří se díky Vám a službám D.A.S. cítí v bezpečí. Dostanete podporu od našich expertů, veškeré potřebné zaškolení a vedoucího, na kterého se budete moci obrátit. Dáváme prostor pro kariérní růst, čekají Vás odměny za dosažené výsledky a podporujeme Váš úspěch systematickým vzděláváním. Po úvodním zaškolení na pozici obchodního zástupce se můžete stát vedoucím obchodní skupiny, který do svého týmu nabírá nové kolegy a vede je k výsledkům. Tato pozice je významně podpořena speciálními školeními zaměřenými na leadership. Zajímá Vás víc o D.A.S.? Tak pokračujte sem 👉 www.das.cz/o-nas/ Dejte vědět, že máte o pozici zájem a dozvíte se více. Klikněte na tlačítko „Odpovědět“ a my se Vám ozveme.Informace o poziciTyp úvazkuPráce na plný úvazek, Práce na zkrácený úvazekTyp smluvního vztahupráce na živnostenský list (IČO)Délka pracovního poměruNa dobu neurčitouMzda40000 - 80000 Kč / měsícBenefityProvize z prodeje, Vzdělávací kurzy, školeníPožadované vzděláníStředoškolské nebo odborné vyučení s maturitouZadavatelD.A.S. právní ochrana, pobočka ERGO Versicherung Aktiengesellschaft pro ČRMísto pracovištěRumunská 655/9, 46001, Liberec - Liberec IV-Perštýn, okres Liberec, Česká republika© Seznam.cz, a.s., 2024, © OpenStreetMap contributorsKontaktD.A.S. právní ochrana, pobočka ERGO Versicherung Aktiengesellschaft pro ČRJan NechanskýOdpovědětZpět na výpis pozic"
 }
 ```
-
-Nenašli jsme žádné nabídky práce odpovídající zadání
-https://www.jobs.cz/prace/zkraceny-uvazek/?date=24h&salary=200000&education=high
-
-Našli jsme pouze jednu nabídku
-https://www.jobs.cz/prace/?locality%5Bcode%5D=M220896&locality%5Blabel%5D=Statenice%2C%20okres%20Praha-z%C3%A1pad&locality%5Bcoords%5D=50.14257%2C14.31853&locality%5Bradius%5D=0
-
-No filter
-https://www.jobs.cz/prace/
-
-2 pages
-https://www.jobs.cz/prace/praha/?salary=200000&employment%5B%5D=full&employment%5B%5D=part&locality%5Bradius%5D=0
-
-4 offers (1 custom)
-https://www.jobs.cz/prace/praha/?date=24h&salary=200000&employment%5B%5D=full&employment%5B%5D=part&locality%5Bradius%5D=0
-
