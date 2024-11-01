@@ -56,7 +56,6 @@ export const formSearchUrl = (jobSearchParams: JobSearchParams) => {
     const url = new URL(baseUrl);
     url.search = searchParams.toString();
 
-    log.info(url.toString());
     return url.toString();
 };
 
@@ -64,9 +63,13 @@ export const formEntryRequestsUrls = (urlArray: UserProvidedUrl[]) => {
     const requests = [];
 
     for (const url of urlArray) {
+        let urlString = url.url;
+        if (urlString.slice(-1) !== '/') {
+            urlString += '/';
+        }
         requests.push(
             {
-                ...url,
+                url: urlString,
                 label: REQUEST_LABELS.entry,
             },
         );

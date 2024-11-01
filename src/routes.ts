@@ -12,7 +12,8 @@ router.addHandler(REQUEST_LABELS.entry, async ({ $, crawler, request }) => {
 
     // provided locality produce invalid URL
     if ($('title').text().trim() === 'Stránka nenalezena') {
-        log.error('Invalid job filtering link. Removing locality parameter and redirecting back to search results page with your other filters applied.');
+        log.error(`Search page ${entryPageUrl} => Invalid job filtering link.`);
+        log.error(`Removing locality parameter and redirecting back to search results page with your other filters applied.`);
         const inputWithoutLocation = { ...request.userData.input, locality: '', radius: '' };
 
         const newEntryUrl = formSearchUrl(inputWithoutLocation);
@@ -60,7 +61,7 @@ router.addHandler(REQUEST_LABELS.entry, async ({ $, crawler, request }) => {
                 },
             });
         }
-
+        log.info(`Search Page has no filtering parameters => ${MAX_PAGES_AMOUNT} list pages enqueued.`);
         await crawler.addRequests(pageLinks);
         return;
     }
@@ -80,14 +81,14 @@ router.addHandler(REQUEST_LABELS.entry, async ({ $, crawler, request }) => {
             }
         }
 
+        log.info(`Search Page ${request.url} => ${totalPagesAmount} list pages enqueued.`);
+
         await crawler.addRequests(pageLinks);
     }
 });
 
 router.addHandler(REQUEST_LABELS.list, async ({ $, crawler, request }) => {
     const jobsElements = $('article.SearchResultCard');
-
-    log.info(`${request.url}: ${jobsElements.length} job(s) in total.`);
 
     const detailRequests = [];
 
@@ -126,6 +127,8 @@ router.addHandler(REQUEST_LABELS.list, async ({ $, crawler, request }) => {
         };
         detailRequests.push(detailPageRequest);
     }
+
+    log.info(`List Page ${request.url} => ${jobsElements.length} job(s) in total.`);
 
     await crawler.addRequests(detailRequests);
 });
