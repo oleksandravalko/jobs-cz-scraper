@@ -58,7 +58,7 @@ export const formSearchUrl = (jobSearchParams: JobSearchParams) => {
     return url.toString();
 };
 
-export const formEntryRequestsUrls = (urlArray: UserProvidedUrl[]) => {
+export const formEntryRequests = (urlArray: UserProvidedUrl[]) => {
     const requests = [];
 
     for (const url of urlArray) {

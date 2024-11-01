@@ -14,17 +14,17 @@ router.addHandler(REQUEST_LABELS.entry, async ({ $, crawler, request }) => {
     if ($('title').text().trim() === 'Stránka nenalezena') {
         log.error(`Search page ${entryPageUrl} => Invalid job filtering link.`);
         log.error(`Removing locality parameter and redirecting back to search results page with your other filters applied.`);
-        const inputWithoutLocation = { ...request.userData.input, locality: '', radius: '' };
+        const inputWithoutLocality = { ...request.userData.input, locality: '', radius: '' };
 
-        const newEntryUrl = formSearchUrl(inputWithoutLocation);
-        log.info(`New entry link without location parameter: ${newEntryUrl}.`);
+        const newEntryUrl = formSearchUrl(inputWithoutLocality);
+        log.info(`New entry link without locality parameter: ${newEntryUrl}.`);
 
         await crawler.addRequests([
             {
                 url: newEntryUrl,
                 label: REQUEST_LABELS.entry,
                 userData: {
-                    inputWithoutLocation,
+                    inputWithoutLocation: inputWithoutLocality,
                 },
             },
         ]);
@@ -44,21 +44,20 @@ router.addHandler(REQUEST_LABELS.entry, async ({ $, crawler, request }) => {
                 log.info('Page is not accessible. Continuing crawling without scraping jobs on that page.');
                 return;
             }
-            default:
+            default: {
                 log.info(`Issue on the page ${entryPageUrl}: '${alertContent}'`);
+                return;
+            }
         }
     }
 
-    // no parameter or user urls are provided
+    // no parameters or user urls provided
     if (entryPageUrl === BASE_URL) {
         const pageLinks = [];
         for (let i = 1; i <= MAX_PAGES_AMOUNT; i++) {
             pageLinks.push({
                 url: `${BASE_URL}?page=${i}`,
                 label: REQUEST_LABELS.list,
-                userData: {
-                    pageNumber: i,
-                },
             });
         }
         log.info(`Search Page has no filtering parameters => ${MAX_PAGES_AMOUNT} list pages enqueued.`);
@@ -81,7 +80,7 @@ router.addHandler(REQUEST_LABELS.entry, async ({ $, crawler, request }) => {
             }
         }
 
-        log.info(`Search Page ${request.url} => ${totalPagesAmount} list pages enqueued.`);
+        log.info(`Search Page ${entryPageUrl} => ${totalPagesAmount} list pages enqueued.`);
 
         await crawler.addRequests(pageLinks);
     }

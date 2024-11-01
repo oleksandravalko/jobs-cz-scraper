@@ -2,7 +2,7 @@ import { Actor, log } from 'apify';
 import { CheerioCrawler, PuppeteerCrawler } from 'crawlee';
 import type { Input, Job } from './types.js';
 import { BASE_URL, DEFAULT_INPUT, REQUEST_LABELS } from './constants.js';
-import { formatDescription, formEntryRequestsUrls, formSearchUrl } from './utils.js';
+import { formatDescription, formEntryRequests, formSearchUrl } from './utils.js';
 import { router } from './routes.js';
 import { puppeteerRequestQueue } from './storages.js';
 
@@ -18,30 +18,24 @@ const parametersBasedEntryRequest = {
         jobSearchParams,
     },
 };
-// include the broadest search link (base url) only if there are no user provided urls present
+// include the broadest search link (base url) only if user provided urls are not present
 if (parametersBasedEntryUrl !== BASE_URL || (parametersBasedEntryUrl === BASE_URL && !searchUrls.length)) {
     entryRequests.push(parametersBasedEntryRequest);
 }
-const userProvidedUrlsRequests = searchUrls ? formEntryRequestsUrls(searchUrls) : [];
+
+const userProvidedUrlsRequests = searchUrls ? formEntryRequests(searchUrls) : [];
 
 if (searchUrls.length) {
     entryRequests.push(...userProvidedUrlsRequests);
 }
 
 const proxyConfiguration = await Actor.createProxyConfiguration({
-    groups: ['RESIDENTIAL'],
     countryCode: 'CZ',
 });
 
 const cheerioCrawler = new CheerioCrawler({
     proxyConfiguration,
-    sessionPoolOptions: {
-        persistStateKey: 'JOBS-SESSIONS-CHEERIO',
-        sessionOptions: {
-            maxUsageCount: 5,
-            maxErrorScore: 1,
-        },
-    },
+    maxRequestRetries: 3,
     maxConcurrency: 50,
     requestHandler: router,
 });
@@ -56,15 +50,7 @@ if (puppeteerRequestQueue.getTotalCount()) {
     const puppeteerCrawler = new PuppeteerCrawler({
         requestQueue: puppeteerRequestQueue,
         proxyConfiguration,
-        maxRequestRetries: 0,
-        headless: false,
-        // sessionPoolOptions: {
-        //     persistStateKey: 'JOBS-SESSIONS-PUPPETEER',
-        //     sessionOptions: {
-        //         maxUsageCount: 3,
-        //         maxErrorScore: 1,
-        //     },
-        // },
+        maxRequestRetries: 3,
         preNavigationHooks: [
             async ({ blockRequests }) => {
                 await blockRequests();
@@ -79,14 +65,14 @@ if (puppeteerRequestQueue.getTotalCount()) {
             });
 
             const rawDescription = await page.evaluate(() => {
-                let currDescription = '';
+                let description = '';
                 const possibleSelectors = ['#vacancy-detail', '#widget_container', 'body']; // pool is based on observation, backed up by <body>
                 for (const selector of possibleSelectors) {
-                    if (!currDescription) {
-                        currDescription = document.querySelector(selector)?.textContent || '';
+                    if (!description) {
+                        description = document.querySelector(selector)?.textContent || '';
                     }
                 }
-                return currDescription;
+                return description;
             });
 
             const job: Job = {
