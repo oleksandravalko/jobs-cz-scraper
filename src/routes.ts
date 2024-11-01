@@ -138,7 +138,7 @@ router.addHandler(REQUEST_LABELS.detail, async ({ $, request }) => {
 
     if (!isJobsCz) {
         // Cheerio crawler cannot reach dynamic content of pages with custom templates, so those request are handed to Puppeteer.
-        log.info(`Custom url, add to Puppeteer request queue ${request.url}.`);
+        log.info(`Custom template page => added to Puppeteer RQ: ${request.url}.`);
         await puppeteerRequestQueue.addRequests([{
             url: request.url,
             userData: request.userData,

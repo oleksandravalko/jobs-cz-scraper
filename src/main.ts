@@ -57,13 +57,19 @@ if (puppeteerRequestQueue.getTotalCount()) {
         requestQueue: puppeteerRequestQueue,
         proxyConfiguration,
         maxRequestRetries: 0,
-        sessionPoolOptions: {
-            persistStateKey: 'JOBS-SESSIONS-PUPPETEER',
-            sessionOptions: {
-                maxUsageCount: 3,
-                maxErrorScore: 1,
+        headless: false,
+        // sessionPoolOptions: {
+        //     persistStateKey: 'JOBS-SESSIONS-PUPPETEER',
+        //     sessionOptions: {
+        //         maxUsageCount: 3,
+        //         maxErrorScore: 1,
+        //     },
+        // },
+        preNavigationHooks: [
+            async ({ blockRequests }) => {
+                await blockRequests();
             },
-        },
+        ],
         requestHandler: async (context) => {
             const { page, request } = context;
 
