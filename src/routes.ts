@@ -134,10 +134,11 @@ router.addHandler(REQUEST_LABELS.list, async ({ $, crawler, request }) => {
 });
 
 router.addHandler(REQUEST_LABELS.detail, async ({ $, request }) => {
-    const isJobsCz = !$('html').attr('data-host'); // determine if it's standard or customized template
+    const isJobsCz = $('meta[content="Jobs.cz"]').length; // determine if it's standard or customized template
 
     if (!isJobsCz) {
         // Cheerio crawler cannot reach dynamic content of pages with custom templates, so those request are handed to Puppeteer.
+        log.info(`Custom url, add to Puppeteer request queue ${request.url}.`);
         await puppeteerRequestQueue.addRequests([{
             url: request.url,
             userData: request.userData,
