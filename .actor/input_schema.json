@@ -177,6 +177,7 @@
             "type": "array",
             "description": "Ready URLs to start job search with.",
             "editor": "requestListSources",
+            "default": [],
             "prefill": [
                 {
                     "url": "https://jobs.cz/prace/"

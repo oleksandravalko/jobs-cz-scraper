@@ -1,4 +1,3 @@
-import { log } from 'apify';
 import { JobSearchParams, UserProvidedUrl, WageRange } from './types.js';
 import { BASE_URL, JOBS_PER_PAGE, REQUEST_LABELS } from './constants.js';
 
