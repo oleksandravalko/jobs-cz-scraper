@@ -67,7 +67,7 @@ router.addHandler(REQUEST_LABELS.entry, async ({ $, crawler, request }) => {
 
     // relevant jobs are found
     const totalJobsAmountElement = $('.SearchHeader strong');
-    if (totalJobsAmountElement) {
+    if (totalJobsAmountElement.length) {
         const totalJobsAmount = Number(totalJobsAmountElement.text().trim().replace(/&nbsp;/g, '')) || 1;
         const totalPagesAmount = pagesAmount(totalJobsAmount);
         const pageLinks = [];
@@ -150,7 +150,7 @@ router.addHandler(REQUEST_LABELS.detail, async ({ $, request }) => {
 
     const descriptionPartElements = $('div[data-visited-position]>div');
     for (let i = 0; i < 4; i++) {
-        rawDescription += $(descriptionPartElements[i]).text();
+        rawDescription += $(descriptionPartElements[i]).text(); // only the first 4 elements have needed content
     }
 
     const description = formatDescription(rawDescription);
