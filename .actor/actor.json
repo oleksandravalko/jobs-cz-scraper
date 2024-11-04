@@ -1,8 +1,8 @@
 {
 	"actorSpecification": 1,
 	"name": "jobs-cz-scraper",
-	"title": "Project Cheerio Crawler Typescript",
-	"description": "Crawlee and Cheerio project in typescript.",
+	"title": "jobs.cz website scraper using TypeScript Crawlee & CheerioCrawler & PuppeteerCrawler",
+	"description": "This scraper collects information about open positions on jobs.cz website.",
 	"version": "0.0",
 	"meta": {
 		"templateId": "ts-crawlee-cheerio"
