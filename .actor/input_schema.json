@@ -180,7 +180,7 @@
             "default": [],
             "prefill": [
                 {
-                    "url": "https://jobs.cz/prace/"
+                    "url": "https://www.jobs.cz/prace/praha/?date=24h&locality%5Bradius%5D=0"
                 }
             ]
         }

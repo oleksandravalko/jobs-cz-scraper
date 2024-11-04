@@ -2,7 +2,7 @@
 	"name": "jobs-cz-scraper",
 	"version": "0.0.1",
 	"type": "module",
-	"description": "This is a boilerplate of an Apify actor.",
+	"description": "This scraper collects information about open positions on jobs.cz website.",
 	"engines": {
 		"node": ">=18.0.0"
 	},
@@ -30,6 +30,6 @@
 		"test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1",
         "run": "apify run -p"
     },
-	"author": "It's not you it's me",
+	"author": "Oleksandra Valko",
 	"license": "ISC"
 }
