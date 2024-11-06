@@ -6,6 +6,8 @@ import { formatDescription, formEntryRequests, formSearchUrl } from './utils.js'
 import { router } from './routes.js';
 import { puppeteerRequestQueueId } from './storages.js';
 
+await Actor.init();
+
 const { searchUrls, ...jobSearchParams } = (await Actor.getInput<Input>())!;
 
 const entryRequests = [];
@@ -84,3 +86,5 @@ if (puppeteerRequestQueue.getTotalCount()) {
     log.info(`Proceeding with the puppeteerCrawler handling ${puppeteerRequestQueue.getTotalCount()} request(s).`);
     await puppeteerCrawler.run();
 }
+
+await Actor.exit();
