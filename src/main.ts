@@ -6,8 +6,6 @@ import { formatDescription, formEntryRequests, formSearchUrl } from './utils.js'
 import { router } from './routes.js';
 import { puppeteerRequestQueue } from './storages.js';
 
-// await Actor.init();
-
 const { searchUrls, ...jobSearchParams } = (await Actor.getInput<Input>())!;
 
 const entryRequests = [];
@@ -45,7 +43,6 @@ log.info(`Starting the cheerioCrawler with ${entryRequests.length} search page(s
 await cheerioCrawler.run();
 
 // start crawler only if it has requests to handle
-// const puppeteerRequestQueue = await RequestQueue.open(puppeteerRequestQueueId);
 if (puppeteerRequestQueue.getTotalCount()) {
     const puppeteerCrawler = new PuppeteerCrawler({
         requestQueue: puppeteerRequestQueue,
@@ -86,5 +83,3 @@ if (puppeteerRequestQueue.getTotalCount()) {
     log.info(`Proceeding with the puppeteerCrawler handling ${puppeteerRequestQueue.getTotalCount()} request(s).`);
     await puppeteerCrawler.run();
 }
-
-// await Actor.exit();
