@@ -1,4 +1,4 @@
-import { Actor, log, RequestQueue } from 'apify';
+import { Actor, log } from 'apify';
 import { CheerioCrawler, PuppeteerCrawler } from 'crawlee';
 import type { Input, Job } from './types.js';
 import { BASE_URL, REQUEST_LABELS } from './constants.js';
@@ -6,7 +6,7 @@ import { formatDescription, formEntryRequests, formSearchUrl } from './utils.js'
 import { router } from './routes.js';
 import { puppeteerRequestQueue } from './storages.js';
 
-await Actor.init();
+// await Actor.init();
 
 const { searchUrls, ...jobSearchParams } = (await Actor.getInput<Input>())!;
 
@@ -87,4 +87,4 @@ if (puppeteerRequestQueue.getTotalCount()) {
     await puppeteerCrawler.run();
 }
 
-await Actor.exit();
+// await Actor.exit();
