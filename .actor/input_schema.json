@@ -4,7 +4,7 @@
     "schemaVersion": 1,
     "properties": {
         "locality": {
-            "title": "Kde?",
+            "title": "Kde (where)?",
             "type": "string",
             "description": "Location: city or region",
             "editor": "textfield"
@@ -33,14 +33,14 @@
             ]
         },
         "keyword": {
-            "title": "Jakou práci hledáte?",
+            "title": "Jakou práci hledáte (what job are you searching for)?",
             "type": "string",
             "description": "Name of firm or professional field",
             "editor": "textfield",
             "default": ""
         },
         "date": {
-            "title": "Čas zveřejnění",
+            "title": "Čas zveřejnění (date of publishing)",
             "type": "string",
             "description": "Recency of job openings.",
             "editor": "select",
@@ -59,13 +59,13 @@
             ]
         },
         "salary": {
-            "title": "Plat",
+            "title": "Plat (salary)",
             "type": "string",
             "description": "Minimum deserved level of income",
             "editor": "textfield"
         },
         "employment": {
-            "title": "Úvazek",
+            "title": "Úvazek (employment)",
             "type": "array",
             "description": "Time commitment.",
             "editor": "select",
@@ -85,7 +85,7 @@
             }
         },
         "contract": {
-            "title": "Typ spolupráce",
+            "title": "Typ spolupráce (contract type)",
             "type": "array",
             "description": "Contract form",
             "editor": "select",
@@ -105,7 +105,7 @@
             }
         },
         "education": {
-            "title": "Vyžadované vzdělání",
+            "title": "Vyžadované vzdělání (required education)",
             "type": "string",
             "description": "Required education",
             "editor": "select",
@@ -124,7 +124,7 @@
             ]
         },
         "languageSkill": {
-            "title": "Vyžadované jazyky",
+            "title": "Vyžadované jazyky (required language skills)",
             "type": "array",
             "description": "Required languages",
             "editor": "select",
@@ -153,8 +153,8 @@
                 ]
             }
         },
-        "arrangement": {
-            "title": "Práce z domova",
+        "arrangement":  {
+            "title": "Práce z domova (work arrangement)",
             "type": "string",
             "description": "Work arrangement",
             "editor": "select",
