@@ -1,12 +1,12 @@
 import { Actor, log } from 'apify';
 import { CheerioCrawler, PuppeteerCrawler } from 'crawlee';
 import type { Input, Job } from './types.js';
-import { BASE_URL, DEFAULT_INPUT, REQUEST_LABELS } from './constants.js';
+import { BASE_URL, REQUEST_LABELS } from './constants.js';
 import { formatDescription, formEntryRequests, formSearchUrl } from './utils.js';
 import { router } from './routes.js';
 import { puppeteerRequestQueue } from './storages.js';
 
-const { searchUrls, ...jobSearchParams } = await Actor.getInput<Input>() ?? DEFAULT_INPUT;
+const { searchUrls, ...jobSearchParams } = (await Actor.getInput<Input>())!;
 
 const entryRequests = [];
 
@@ -29,13 +29,10 @@ if (searchUrls.length) {
     entryRequests.push(...userProvidedUrlsRequests);
 }
 
-const proxyConfiguration = await Actor.createProxyConfiguration({
-    countryCode: 'CZ',
-});
+const proxyConfiguration = await Actor.createProxyConfiguration();
 
 const cheerioCrawler = new CheerioCrawler({
     proxyConfiguration,
-    maxRequestRetries: 3,
     maxConcurrency: 50,
     requestHandler: router,
 });
@@ -50,7 +47,6 @@ if (puppeteerRequestQueue.getTotalCount()) {
     const puppeteerCrawler = new PuppeteerCrawler({
         requestQueue: puppeteerRequestQueue,
         proxyConfiguration,
-        maxRequestRetries: 3,
         preNavigationHooks: [
             async ({ blockRequests }) => {
                 await blockRequests();

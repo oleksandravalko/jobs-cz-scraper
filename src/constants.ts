@@ -6,20 +6,6 @@ export const JOBS_PER_PAGE = 30;
 
 export const MAX_PAGES_AMOUNT = 45;
 
-export const DEFAULT_INPUT = {
-    locality: '',
-    radius: '',
-    keyword: '',
-    date: '',
-    salary: '',
-    employment: [],
-    contract: [],
-    education: '',
-    languageSkill: [],
-    arrangement: '',
-    searchUrls: [],
-};
-
 export const REQUEST_LABELS = {
     entry: 'ENTRY',
     list: 'LIST',
