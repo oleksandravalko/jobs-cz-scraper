@@ -12,8 +12,8 @@ router.addHandler(REQUEST_LABELS.ENTRY, async ({ $, crawler, request }) => {
 
     // provided locality produce invalid URL
     if ($('title').text().trim() === 'Stránka nenalezena') {
-        log.error(`Search page ${entryPageUrl} => Invalid job filtering link.`);
-        log.error(`Removing locality parameter and redirecting back to search results page with your other filters applied.`);
+        log.info(`Search page ${entryPageUrl} => Invalid job filtering link.`);
+        log.info(`Removing locality parameter and redirecting back to search results page with your other filters applied.`);
         const inputWithoutLocality = { ...request.userData.input, locality: '', radius: '' };
 
         const newEntryUrl = formSearchUrl(inputWithoutLocality);
