@@ -62,7 +62,8 @@
             "title": "Plat (salary)",
             "type": "string",
             "description": "Minimum deserved level of income",
-            "editor": "textfield"
+            "editor": "textfield",
+            "sectionCaption": "Optional: specify details about job opportunities you are searching for."
         },
         "employment": {
             "title": "Úvazek (employment)",
@@ -182,7 +183,8 @@
                 {
                     "url": "https://www.jobs.cz/prace/praha/?date=24h&locality%5Bradius%5D=0"
                 }
-            ]
+            ],
+            "sectionCaption": "Optional: insert URLs you want ro scrape."
         }
     }
 }
