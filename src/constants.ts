@@ -7,9 +7,9 @@ export const JOBS_PER_PAGE = 30;
 export const MAX_PAGES_AMOUNT = 45;
 
 export const REQUEST_LABELS = {
-    entry: 'ENTRY',
-    list: 'LIST',
-    detail: 'DETAIL',
+    ENTRY: 'ENTRY',
+    LIST: 'LIST',
+    DETAIL: 'DETAIL',
 };
 
 export const defaultWageRange: WageRange = {

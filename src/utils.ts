@@ -69,7 +69,7 @@ export const formEntryRequests = (urlArray: UserProvidedUrl[]) => {
         requests.push(
             {
                 url: urlString,
-                label: REQUEST_LABELS.entry,
+                label: REQUEST_LABELS.ENTRY,
             },
         );
     }

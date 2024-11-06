@@ -1,13 +1,13 @@
 import { createCheerioRouter } from 'crawlee';
-import { Actor, log } from 'apify';
+import { Actor, log, RequestQueue } from 'apify';
 import { BASE_URL, defaultWageRange, MAX_PAGES_AMOUNT, REQUEST_LABELS } from './constants.js';
 import { formatDescription, formSearchUrl, formWageRange, pagesAmount } from './utils.js';
 import type { Job, WageRange } from './types.js';
-import { puppeteerRequestQueue } from './storages.js';
+import { puppeteerRequestQueueId } from './storages.js';
 
 export const router = createCheerioRouter();
 
-router.addHandler(REQUEST_LABELS.entry, async ({ $, crawler, request }) => {
+router.addHandler(REQUEST_LABELS.ENTRY, async ({ $, crawler, request }) => {
     const entryPageUrl = request.url;
 
     // provided locality produce invalid URL
@@ -22,7 +22,7 @@ router.addHandler(REQUEST_LABELS.entry, async ({ $, crawler, request }) => {
         await crawler.addRequests([
             {
                 url: newEntryUrl,
-                label: REQUEST_LABELS.entry,
+                label: REQUEST_LABELS.ENTRY,
                 userData: {
                     inputWithoutLocation: inputWithoutLocality,
                 },
@@ -57,7 +57,7 @@ router.addHandler(REQUEST_LABELS.entry, async ({ $, crawler, request }) => {
         for (let i = 1; i <= MAX_PAGES_AMOUNT; i++) {
             pageLinks.push({
                 url: `${BASE_URL}?page=${i}`,
-                label: REQUEST_LABELS.list,
+                label: REQUEST_LABELS.LIST,
             });
         }
         log.info(`Search Page has no filtering parameters => ${MAX_PAGES_AMOUNT} list pages enqueued.`);
@@ -75,7 +75,7 @@ router.addHandler(REQUEST_LABELS.entry, async ({ $, crawler, request }) => {
             for (let i = 1; i <= totalPagesAmount; i++) {
                 pageLinks.push({
                     url: `${entryPageUrl}&page=${i}`,
-                    label: REQUEST_LABELS.list,
+                    label: REQUEST_LABELS.LIST,
                 });
             }
         }
@@ -86,7 +86,7 @@ router.addHandler(REQUEST_LABELS.entry, async ({ $, crawler, request }) => {
     }
 });
 
-router.addHandler(REQUEST_LABELS.list, async ({ $, crawler, request }) => {
+router.addHandler(REQUEST_LABELS.LIST, async ({ $, crawler, request }) => {
     const jobsElements = $('article.SearchResultCard');
 
     const detailRequests = [];
@@ -111,7 +111,7 @@ router.addHandler(REQUEST_LABELS.list, async ({ $, crawler, request }) => {
 
         const detailPageRequest = {
             url: link,
-            label: REQUEST_LABELS.detail,
+            label: REQUEST_LABELS.DETAIL,
             userData: {
                 jobData: {
                     id,
@@ -132,12 +132,13 @@ router.addHandler(REQUEST_LABELS.list, async ({ $, crawler, request }) => {
     await crawler.addRequests(detailRequests);
 });
 
-router.addHandler(REQUEST_LABELS.detail, async ({ $, request }) => {
+router.addHandler(REQUEST_LABELS.DETAIL, async ({ $, request }) => {
     const isJobsCz = $('meta[content="Jobs.cz"]').length; // determine if it's standard or customized template
 
     if (!isJobsCz) {
         // Cheerio crawler cannot reach dynamic content of pages with custom templates, so those request are handed to Puppeteer.
         log.info(`Custom template page => added to Puppeteer RQ: ${request.url}.`);
+        const puppeteerRequestQueue = await RequestQueue.open(puppeteerRequestQueueId);
         await puppeteerRequestQueue.addRequests([{
             url: request.url,
             userData: request.userData,

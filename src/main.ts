@@ -1,10 +1,10 @@
-import { Actor, log } from 'apify';
+import { Actor, log, RequestQueue } from 'apify';
 import { CheerioCrawler, PuppeteerCrawler } from 'crawlee';
 import type { Input, Job } from './types.js';
 import { BASE_URL, REQUEST_LABELS } from './constants.js';
 import { formatDescription, formEntryRequests, formSearchUrl } from './utils.js';
 import { router } from './routes.js';
-import { puppeteerRequestQueue } from './storages.js';
+import { puppeteerRequestQueueId } from './storages.js';
 
 const { searchUrls, ...jobSearchParams } = (await Actor.getInput<Input>())!;
 
@@ -13,7 +13,7 @@ const entryRequests = [];
 const parametersBasedEntryUrl = formSearchUrl(jobSearchParams);
 const parametersBasedEntryRequest = {
     url: parametersBasedEntryUrl,
-    label: REQUEST_LABELS.entry,
+    label: REQUEST_LABELS.ENTRY,
     userData: {
         jobSearchParams,
     },
@@ -43,6 +43,7 @@ log.info(`Starting the cheerioCrawler with ${entryRequests.length} search page(s
 await cheerioCrawler.run();
 
 // start crawler only if it has requests to handle
+const puppeteerRequestQueue = await RequestQueue.open(puppeteerRequestQueueId);
 if (puppeteerRequestQueue.getTotalCount()) {
     const puppeteerCrawler = new PuppeteerCrawler({
         requestQueue: puppeteerRequestQueue,
