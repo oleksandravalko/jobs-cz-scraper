@@ -1,5 +1,5 @@
-import { Actor, log } from 'apify';
-import { CheerioCrawler, PuppeteerCrawler } from 'crawlee';
+import { Actor, log, RequestQueue } from 'apify';
+import { CheerioCrawler, PuppeteerCrawler, RequestQueueV1 } from 'crawlee';
 import type { Input, Job } from './types.js';
 import { BASE_URL, REQUEST_LABELS } from './constants.js';
 import { formatDescription, formEntryRequests, formSearchUrl } from './utils.js';
@@ -43,6 +43,7 @@ log.info(`Starting the cheerioCrawler with ${entryRequests.length} search page(s
 await cheerioCrawler.run();
 
 // start crawler only if it has requests to handle
+log.info(`Entering pup.crawler with requests queue ${puppeteerRequestQueue?.id} count ${puppeteerRequestQueue.getTotalCount()}`);
 if (puppeteerRequestQueue.getTotalCount()) {
     const puppeteerCrawler = new PuppeteerCrawler({
         requestQueue: puppeteerRequestQueue,
