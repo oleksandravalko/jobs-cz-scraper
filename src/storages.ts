@@ -12,5 +12,6 @@ if (currId !== savedId) {
     await Actor.setValue('RQ_ID', currId);
 }
 
+log.info('test infofofo');
 export const puppeteerRequestQueue = await RequestQueue.open(currId);
 log.info(`ID of puppeteer RQ now: ${currId}`);
