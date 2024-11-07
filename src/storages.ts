@@ -1,7 +1,6 @@
-import { Actor, log, RequestQueue } from 'apify';
+import { Actor, RequestQueue } from 'apify';
 
 const savedId = await Actor.getValue<string>('RQ_ID');
-log.info(`ID pulled out of storage ${savedId}`);
 
 const getNewId = async () => {
     const queueInfo = await Actor.apifyClient.requestQueues().getOrCreate();
@@ -9,7 +8,6 @@ const getNewId = async () => {
 };
 
 const currId = savedId || await getNewId();
-log.info(`currId = savedId || newID ${currId}`);
 
 if (currId !== savedId) {
     await Actor.setValue('RQ_ID', currId);
