@@ -1,7 +1,7 @@
 import { Actor, log, RequestQueue } from 'apify';
 
 const savedId = await Actor.getValue<string>('RQ_ID');
-log.info(`RQ ID pulled from storage: ${savedId}`);
+log.info(`ID of puppeteer RQ pulled from storage: ${savedId}`);
 const getNewId = async () => {
     const queueInfo = await Actor.apifyClient.requestQueues().getOrCreate();
     return queueInfo.id;
@@ -12,6 +12,5 @@ if (currId !== savedId) {
     await Actor.setValue('RQ_ID', currId);
 }
 
-log.info('test infofofo');
 export const puppeteerRequestQueue = await RequestQueue.open(currId);
 log.info(`ID of puppeteer RQ now: ${currId}`);

@@ -43,7 +43,7 @@ await cheerioCrawler.run();
 
 // start crawler only if it has requests to handle
 if (puppeteerRequestQueue.getTotalCount()) {
-    log.info(`Entering puppeteerCrawler with requests queue #${puppeteerRequestQueue?.id} containing ${puppeteerRequestQueue.getTotalCount()} requests.`);
+    log.info(`Entering puppeteerCrawler with requests queue ID: ${puppeteerRequestQueue?.id} containing ${puppeteerRequestQueue.getTotalCount()} requests.`);
     const puppeteerCrawler = new PuppeteerCrawler({
         requestQueue: puppeteerRequestQueue,
         proxyConfiguration,
