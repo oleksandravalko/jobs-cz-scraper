@@ -1,12 +1,76 @@
 {
-	"actorSpecification": 1,
-	"name": "jobs-cz-scraper",
-	"title": "jobs.cz website scraper using TypeScript Crawlee & CheerioCrawler & PuppeteerCrawler",
-	"description": "This scraper collects information about open positions on jobs.cz website.",
-	"version": "0.0",
-	"meta": {
-		"templateId": "ts-crawlee-cheerio"
-	},
-	"input": "./input_schema.json",
-	"dockerfile": "./Dockerfile"
+    "actorSpecification": 1,
+    "name": "jobs-cz-scraper",
+    "title": "jobs.cz website scraper using TypeScript Crawlee & CheerioCrawler & PuppeteerCrawler",
+    "description": "This scraper collects information about open positions on jobs.cz website.",
+    "version": "0.0",
+    "meta": {
+        "templateId": "ts-crawlee-cheerio"
+    },
+    "input": "./input_schema.json",
+    "dockerfile": "./Dockerfile",
+    "storages": {
+        "dataset": {
+            "actorSpecification": 1,
+            "views": {
+                "overview": {
+                    "title": "Overview",
+                    "transformation": {
+                        "fields": [
+                            "id",
+                            "link",
+                            "employer",
+                            "title",
+                            "locality",
+                            "isWage",
+                            "minWage",
+                            "maxWage",
+                            "description"
+                        ]
+                    },
+                    "display": {
+                        "component": "table",
+                        "properties": {
+                            "id": {
+                                "label": "ID",
+                                "format": "number"
+                            },
+                            "link": {
+                                "label": "Link",
+                                "format": "link"
+                            },
+                            "employer": {
+                                "label": "Employer",
+                                "format": "text"
+                            },
+                            "title": {
+                                "label": "Job title",
+                                "format": "text"
+                            },
+                            "locality": {
+                                "label": "Locality",
+                                "format": "text"
+                            },
+                            "isWage": {
+                                "label": "Wage provided",
+                                "format": "boolean"
+                            },
+                            "minWage": {
+                                "label": "Minimum wage",
+                                "format": "number"
+                            },
+                            "maxWage": {
+                                "label": "Maximum wage",
+                                "format": "number"
+                            },
+                            "description": {
+                                "label": "Description",
+                                "format": "text"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
