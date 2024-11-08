@@ -45,7 +45,7 @@
             "type": "string",
             "description": "Recency of job openings.",
             "editor": "select",
-            "default": "",
+            "default": "24h",
             "enum": [
                 "",
                 "24h",
@@ -72,7 +72,7 @@
             "type": "array",
             "description": "Time commitment.",
             "editor": "select",
-            "default": [],
+            "default": ["part"],
             "items": {
                 "type": "string",
                 "enum": [
@@ -156,12 +156,12 @@
                 ]
             }
         },
-        "arrangement":  {
+        "arrangement": {
             "title": "Práce z domova (work arrangement)",
             "type": "string",
             "description": "Work arrangement",
             "editor": "select",
-            "default": "",
+            "default": "partial-work-from-home",
             "enum": [
                 "",
                 "partial-work-from-home",
@@ -181,11 +181,7 @@
             "description": "Ready URLs to start job search with.",
             "editor": "requestListSources",
             "default": [],
-            "prefill": [
-                {
-                    "url": "https://www.jobs.cz/prace/praha/?date=24h&locality%5Bradius%5D=0"
-                }
-            ],
+            "prefill": [],
             "sectionCaption": "Optional: insert URLs you want ro scrape."
         }
     }
