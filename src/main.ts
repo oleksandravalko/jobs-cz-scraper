@@ -18,6 +18,7 @@ const parametersBasedEntryRequest = {
         jobSearchParams,
     },
 };
+
 // include the broadest search link (base url) only if user provided urls are not present
 if (parametersBasedEntryUrl !== BASE_URL || (parametersBasedEntryUrl === BASE_URL && !searchUrls.length)) {
     entryRequests.push(parametersBasedEntryRequest);
@@ -36,6 +37,9 @@ const cheerioCrawler = new CheerioCrawler({
     maxConcurrency: 50,
     requestHandler: router,
 });
+
+const startLog = `Starting with URLS: ${entryRequests.join(', ')}`;
+log.info(startLog);
 
 await cheerioCrawler.addRequests(entryRequests);
 

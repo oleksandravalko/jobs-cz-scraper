@@ -45,7 +45,7 @@
             "type": "string",
             "description": "Recency of job openings.",
             "editor": "select",
-            "default": "24h",
+            "default": "",
             "enum": [
                 "",
                 "24h",
@@ -72,7 +72,7 @@
             "type": "array",
             "description": "Time commitment.",
             "editor": "select",
-            "default": ["part"],
+            "default": [""],
             "items": {
                 "type": "string",
                 "enum": [
@@ -161,7 +161,7 @@
             "type": "string",
             "description": "Work arrangement",
             "editor": "select",
-            "default": "partial-work-from-home",
+            "default": "",
             "enum": [
                 "",
                 "partial-work-from-home",
