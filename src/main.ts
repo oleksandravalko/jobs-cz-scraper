@@ -38,7 +38,7 @@ const cheerioCrawler = new CheerioCrawler({
     requestHandler: router,
 });
 
-const startLog = `Starting with URLS: ${entryRequests.join(', ')}`;
+const startLog = `Starting with URLS: ${[searchUrls, parametersBasedEntryUrl].join(', ')}`;
 log.info(startLog);
 
 await cheerioCrawler.addRequests(entryRequests);
