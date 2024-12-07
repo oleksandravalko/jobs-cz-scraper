@@ -1,3 +1,4 @@
+import { log } from 'apify';
 import { JobSearchParams, UserProvidedUrl, WageRange } from './types.js';
 import { BASE_URL, JOBS_PER_PAGE, REQUEST_LABELS } from './constants.js';
 
@@ -63,6 +64,7 @@ export const formEntryRequests = (urlArray: UserProvidedUrl[]) => {
 
     for (const url of urlArray) {
         let urlString = url.url;
+        log.info(`User provided start URL: ${urlString}`);
         if (urlString.slice(-1) !== '/') {
             urlString += '/';
         }
