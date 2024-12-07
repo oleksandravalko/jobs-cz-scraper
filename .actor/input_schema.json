@@ -72,7 +72,7 @@
             "type": "array",
             "description": "Time commitment.",
             "editor": "select",
-            "default": [""],
+            "default": [],
             "items": {
                 "type": "string",
                 "enum": [
