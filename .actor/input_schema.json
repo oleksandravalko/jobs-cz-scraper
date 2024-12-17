@@ -181,7 +181,9 @@
             "description": "Ready URLs to start job search with.",
             "editor": "requestListSources",
             "default": [],
-            "prefill": [],
+            "prefill": [
+                "https://www.jobs.cz/prace/praha/?q%5B%5D=react&date=7d&locality%5Bradius%5D=0"
+            ],
             "sectionCaption": "Optional: insert URLs you want ro scrape."
         }
     }

@@ -7,7 +7,7 @@
 		"node": ">=18.0.0"
 	},
 	"dependencies": {
-		"apify": "3.2.6",
+		"apify": "^3.2.6",
 		"crawlee": "3.11.5",
 		"puppeteer": "23.6.1"
 	},
@@ -28,8 +28,8 @@
 		"lint": "eslint ./src --ext .ts",
 		"lint:fix": "eslint ./src --ext .ts --fix",
 		"test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1",
-        "run": "apify run -p"
-    },
+		"run": "apify run -p"
+	},
 	"author": "Oleksandra Valko",
 	"license": "ISC"
 }
