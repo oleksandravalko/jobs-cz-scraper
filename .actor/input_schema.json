@@ -8,6 +8,7 @@
             "type": "string",
             "description": "Location: city or region",
             "default": "",
+            "prefill": "jihocesky-kraj",
             "editor": "textfield"
         },
         "radius": {
@@ -38,7 +39,8 @@
             "type": "string",
             "description": "Name of firm or professional field",
             "editor": "textfield",
-            "default": ""
+            "default": "",
+            "prefill": "net-vyvojar"
         },
         "date": {
             "title": "Čas zveřejnění (date of publishing)",
